@@ -1,12 +1,11 @@
 import { ObjectId } from "mongodb";
 import { getMongoClientInstance } from "../config";
 import { hashPass } from "../helpers/hash";
-
-const DATABASE_NAME = "games-store-db";
-const COLLECTION_USER = "users";
+import { COLLECTION_USER, DATABASE_NAME } from "../../../context";
 
 export interface UserModel {
   _id: ObjectId;
+  name: string;
   username: string;
   email: string;
   password: string;
