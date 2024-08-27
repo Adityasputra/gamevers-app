@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getMongoClientInstance } from "../config";
+import { hashPass } from "../helpers/hash";
 
 const DATABASE_NAME = "games-store-db";
 const COLLECTION_USER = "users";
@@ -39,4 +40,16 @@ export const getUserById = async (id: string) => {
     .findOne({ _id: objectId }, { projection: { password: 0 } })) as UserModel;
 
   return user;
+};
+
+export const createUser = async (user: UserModelInput) => {
+  const db = await getDB();
+
+  const modifiedUser: UserModelInput = {
+    ...user,
+    password: hashPass(user.password),
+  };
+
+  const newUser = await db.collection(COLLECTION_USER).insertOne(modifiedUser);
+  return newUser;
 };
