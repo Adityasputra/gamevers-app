@@ -33,3 +33,22 @@ export const getAllProduct = async () => {
 
   return products;
 };
+
+export const addProduct = async (product: ProductModelInput) => {
+  try {
+    const db = await getDB();
+    const modifiedProduct: ProductModelInput = {
+      ...product,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const newProduct = await db
+      .collection(COLLECTION_PRODUCT)
+      .insertOne(modifiedProduct);
+
+    return newProduct;
+  } catch (error) {
+    console.log(error);
+  }
+};
