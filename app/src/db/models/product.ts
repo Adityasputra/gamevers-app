@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getMongoClientInstance } from "../config";
-import { COLLECTION_PRODUCT, DATABASE_NAME } from "../../../context";
+import { COLLECTION_PRODUCT, DATABASE_NAME } from "../../constants";
 
 export interface ProductModel {
   _id: ObjectId;
@@ -24,7 +24,7 @@ export const getDB = async () => {
   return db;
 };
 
-export const getAllProduct = async () => {
+export const getAllProducts = async () => {
   const db = await getDB();
   const products = (await db
     .collection(COLLECTION_PRODUCT)

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getMongoClientInstance } from "../config";
 import { hashPass } from "../helpers/hash";
-import { COLLECTION_USER, DATABASE_NAME } from "../../../context";
+import { COLLECTION_USER, DATABASE_NAME } from "../../constants";
 
 export interface UserModel {
   _id: ObjectId;
