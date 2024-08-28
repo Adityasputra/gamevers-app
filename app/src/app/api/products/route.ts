@@ -8,7 +8,9 @@ export async function GET(request: Request) {
     return Response.json(products, {
       status: 200,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function POST(request: Request) {
