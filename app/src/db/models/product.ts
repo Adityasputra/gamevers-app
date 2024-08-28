@@ -16,8 +16,6 @@ export interface ProductModel {
   updatedAt: Date;
 }
 
-
-
 export type ProductModelInput = Omit<ProductModel, "_id">;
 export const getDB = async () => {
   const client = await getMongoClientInstance();

@@ -1,6 +1,40 @@
+import { BASE_URL } from "@/constants";
 import img from "../../../public/controller.jpg";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default function LoginPages() {
+export interface LoginResponse {
+  access_token: string;
+}
+
+export default function LoginPages({
+  searchParams,
+}: {
+  searchParams: { error: string };
+}) {
+  const handleLogin = async (formData: FormData) => {
+    "use server";
+
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    const res = await fetch(BASE_URL + "/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      console.log(result);
+      return redirect("/login?error=" + result.message);
+    }
+
+    cookies().set("Authorization", `Bearer ${result.access_token}`);
+    return redirect("/home");
+  };
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-900">
@@ -20,10 +54,13 @@ export default function LoginPages() {
             <p className="text-gray-400 text-center mb-6">
               Please Login to Continue
             </p>
+            {searchParams.error}
             <form>
               <div className="mb-4">
                 <input
                   type="text"
+                  id="name"
+                  name="name"
                   placeholder="Username or Email"
                   className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -31,6 +68,8 @@ export default function LoginPages() {
               <div className="mb-4">
                 <input
                   type="password"
+                  id="password"
+                  name="password"
                   placeholder="Password"
                   className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />

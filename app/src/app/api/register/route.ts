@@ -4,12 +4,11 @@ import { z } from "zod";
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as UserModelInput;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const parsedData = z
       .object({
         name: z.string().optional(),
         username: z.string(),
-        email: z.string().email().regex(emailRegex),
+        email: z.string().email(),
         password: z.string().min(5),
       })
       .safeParse(body);
