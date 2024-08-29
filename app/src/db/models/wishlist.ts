@@ -32,3 +32,16 @@ export const addWishlist = async (wishlist: WishlistModelInput) => {
 
   return addWishlist;
 };
+
+export const deleteWishlistById = async (id: string) => {
+  const db = await getDB();
+  console.log(id);
+  const objectId = new ObjectId(id);
+  console.log(objectId);
+  const wishlist = await db
+    .collection(COLLECTION_WISHLIST)
+    .deleteOne({ _id: objectId });
+
+  console.log(wishlist);
+  return wishlist;
+};
