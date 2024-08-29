@@ -12,7 +12,6 @@ export async function GET(request: Request) {
     console.log(error);
   }
 }
-
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as UserModelInput;

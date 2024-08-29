@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
     });
 
     response.cookies.set("Authorization", `Bearer ${access_token}`);
+    return response;
   } catch (error) {
+    // console.log(error);
     if (error instanceof z.ZodError) {
       const errorPath = error.issues[0].path[0];
       const errorMessage = error.issues[0].message;

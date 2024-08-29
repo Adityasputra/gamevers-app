@@ -53,6 +53,16 @@ export const addProduct = async (product: ProductModelInput) => {
   }
 };
 
-export const searchProduct = async () => {
-  
-}
+export const getProductById = async (id: string) => {
+  const db = await getDB();
+  console.log(id)
+  const objectId = new ObjectId(id);
+  console.log(objectId);
+
+  const product = (await db
+    .collection(COLLECTION_PRODUCT)
+    .findOne({ _id: objectId })) as ProductModel;
+
+  console.log(product);
+  return product;
+};

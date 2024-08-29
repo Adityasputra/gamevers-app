@@ -60,5 +60,6 @@ export const getUserByEmail = async (email: string) => {
     .collection(COLLECTION_USER)
     .findOne({ email })) as UserModel;
 
+  console.log(user);
   return user;
 };

@@ -1,5 +1,4 @@
 import { BASE_URL } from "@/constants";
-import img from "../../../public/controller.jpg";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
@@ -55,12 +54,12 @@ export default function LoginPages({
               Please Login to Continue
             </p>
             {searchParams.error}
-            <form>
+            <form action={handleLogin}>
               <div className="mb-4">
                 <input
-                  type="text"
-                  id="name"
-                  name="name"
+                  type="email"
+                  id="email"
+                  name="email"
                   placeholder="Username or Email"
                   className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
