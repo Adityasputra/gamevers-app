@@ -1,4 +1,4 @@
-import ServerProtected from "@/components/ServerProtected";
+import ServerPublic from "@/components/ServerPublic";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,14 +6,14 @@ export const metadata: Metadata = {
   description: "all products",
 };
 
-export default function AuthLayout({
+export default function NoAuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <>
-      <ServerProtected>{children}</ServerProtected>
+      <ServerPublic>{children}</ServerPublic>
     </>
   );
 }
