@@ -24,7 +24,6 @@ export default async function Productlist() {
         <aside className="w-64 bg-gray-800 p-6 rounded-lg shadow-lg">
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-6">Platforms</h2>
-            <input type="search" />
             <ul className="space-y-3">
               {[
                 "PC",

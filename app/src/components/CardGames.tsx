@@ -12,7 +12,7 @@ export default function CardGames({ product }: { product: ProductModel }) {
       />
       <h3 className="text-lg font-semibold text-white">{product.name}</h3>
       <div className="flex flex-wrap gap-2 mt-3">
-        {product.tags.map((tag, index) => (
+        {product.tags?.map((tag, index) => (
           <span
             key={index}
             className="bg-gray-700 text-white text-xs font-semibold py-1 px-3 rounded-full"

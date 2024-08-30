@@ -11,7 +11,7 @@ export interface ProductModel {
   price?: number;
   tags?: string[];
   thumbnail?: string;
-  images: string[];
+  images?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
