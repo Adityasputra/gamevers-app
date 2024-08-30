@@ -25,9 +25,8 @@ export default function CardGames({ product }: { product: ProductModel }) {
         {product.excerpt}
       </p>
 
-      {/* Bagian Harga dan Tombol */}
       <div className="mt-auto flex items-center justify-between space-x-4">
-        <p className="text-xl font-bold text-orange-500">${product.price}</p>
+        <p className="text-xl font-bold text-gray-100">${product.price}</p>
         <div className="flex space-x-2">
           <button className="flex items-center justify-center bg-orange-600 py-2 px-4 rounded-full text-sm font-semibold text-white hover:bg-orange-700 transition-colors">
             Add to Cart

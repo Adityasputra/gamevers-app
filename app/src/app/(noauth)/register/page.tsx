@@ -9,6 +9,24 @@ export default function RegisterPages({
   async function handleRegister(formData: FormData) {
     "use server";
 
+    const rawFormData = {
+      name: formData.get("name"),
+      username: formData.get("username"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+    
+    const ras = await fetch(BASE_URL + "/register", {
+      method: "POST",
+      body: JSON.stringify(rawFormData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+  async function register(formData: FormData) {
+    "use server";
+
     const newUser = {
       name: formData.get("name"),
       username: formData.get("username"),
