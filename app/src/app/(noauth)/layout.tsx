@@ -1,6 +1,5 @@
-import ServerProtected from "@/components/ServerProtected";
+import ServerPublic from "@/components/ServerPublic";
 import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "wishlist",
   description: "all products",
@@ -13,7 +12,7 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <ServerProtected>{children}</ServerProtected>
+      <ServerPublic>{children}</ServerPublic>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import ServerProtected from "@/components/ServerProtected";
 import type { Metadata } from "next";
 
@@ -13,7 +14,10 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <ServerProtected>{children}</ServerProtected>
+      <ServerProtected>
+        <Navbar />
+        {children}
+      </ServerProtected>
     </>
   );
 }

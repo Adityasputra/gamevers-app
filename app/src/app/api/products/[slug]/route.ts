@@ -6,7 +6,18 @@ export async function GET(
 ) {
   try {
     const product = await getProductById(params.slug);
-    console.log(product);
+
+    if (!product) {
+      return Response.json(
+        {
+          message: "Product not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
     return Response.json(product, {
       status: 200,
     });

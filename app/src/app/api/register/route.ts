@@ -1,4 +1,4 @@
-import { createUser, UserModelInput } from "@/db/models/user";
+import { createUser, getUserByEmail, UserModelInput } from "@/db/models/user";
 import { z } from "zod";
 
 export async function POST(request: Request) {
@@ -17,7 +17,21 @@ export async function POST(request: Request) {
       throw parsedData.error;
     }
 
-    const user = await createUser(body);
+    const checkEamil = await getUserByEmail(parsedData.data.email);
+    if (checkEamil) {
+      return Response.json(
+        {
+          error: {
+            message: "Email is already registered",
+          },
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const user = await createUser(parsedData.data);
     return Response.json(user, {
       status: 201,
     });

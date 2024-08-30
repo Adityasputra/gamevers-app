@@ -1,15 +1,40 @@
-import { addProduct, getAllProducts } from "@/db/models/product";
+import {
+  addProduct,
+  getAllProducts,
+  getProductCount,
+} from "@/db/models/product";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const products = await getAllProducts();
+    const searchParams = request.nextUrl.searchParams;
+    const search = searchParams.get("search") || "";
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
 
-    return Response.json(products, {
+    const products = await getAllProducts(search, page, pageSize);
+    const totalCount = await getProductCount(search);
+
+    const response = {
+      data: products,
+      pagination: {
+        currentPage: page,
+        pageSize: pageSize,
+        totalItems: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
+    };
+    return NextResponse.json(response, {
       status: 200,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in GET handler:", error);
+
+    return NextResponse.json(
+      { message: "Failed to fetch products" },
+      { status: 500 }
+    );
   }
 }
 
@@ -35,11 +60,34 @@ export async function POST(request: Request) {
       throw parsedData.error;
     }
 
-    const product = await addProduct(body);
+    const product = await addProduct(parsedData.data);
     return Response.json(product, {
       status: 201,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.log(error.issues);
+      const errorPath = error.issues[0].path[0];
+      const errorMessage = error.issues[0].message;
+
+      return Response.json(
+        {
+          message: `${errorPath} ${errorMessage}`,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     console.log(error);
+    return Response.json(
+      {
+        message: "Internal Server Error",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

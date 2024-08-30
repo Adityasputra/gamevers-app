@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const User = z.object({
-  email: z.string(),
+  email: z.string().email(),
   password: z.string().min(5),
 });
 
@@ -20,18 +20,26 @@ export async function POST(request: NextRequest) {
 
     const user = await getUserByEmail(body.email);
     if (!user) {
-      return NextResponse.json({
-        message: "Invalid email or password",
-        status: 401,
-      });
+      return NextResponse.json(
+        {
+          message: "Invalid email or password",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
-    const comparePass = comparedPass(body.password, user.password);
-    if (!comparePass) {
-      return NextResponse.json({
-        message: "Invalid email or password",
-        status: 401,
-      });
+    const isPasswordValid = comparedPass(body.password, user.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        {
+          message: "Invalid email or password",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
     const access_token = signToken({
@@ -45,7 +53,6 @@ export async function POST(request: NextRequest) {
     response.cookies.set("Authorization", `Bearer ${access_token}`);
     return response;
   } catch (error) {
-    // console.log(error);
     if (error instanceof z.ZodError) {
       const errorPath = error.issues[0].path[0];
       const errorMessage = error.issues[0].message;

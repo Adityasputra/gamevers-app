@@ -1,28 +1,32 @@
 import { BASE_URL } from "@/constants";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 
-export interface PropsFormData {
-  name: FormDataEntryValue | null;
-  username: FormDataEntryValue | null;
-  email: FormDataEntryValue | null;
-  password: FormDataEntryValue;
-}
-
-export default function LoginPages({
+export default function RegisterPages({
   searchParams,
 }: {
   searchParams: { error: string };
 }) {
-  const addUser = async (rawFormData: PropsFormData) => {
+  async function handleRegister(formData: FormData) {
+    "use server";
+
+    const newUser = {
+      name: formData.get("name"),
+      username: formData.get("username"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+
     const res = await fetch(BASE_URL + "/register", {
       method: "POST",
-      body: JSON.stringify(rawFormData),
+      body: JSON.stringify(newUser),
       headers: {
         "Content-Type": "application/json",
       },
     });
-  };
+
+    const data = res.json();
+    redirect("/");
+  }
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-900">
@@ -43,13 +47,31 @@ export default function LoginPages({
               Please Login to Continue
             </p>
             {searchParams.error}
-            <form>
+            <form action={handleRegister}>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
               <div className="mb-4">
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  placeholder="Username or Email"
+                  placeholder="Email"
                   className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -75,7 +97,7 @@ export default function LoginPages({
                 type="submit"
                 className="w-full py-3 rounded bg-indigo-500 hover:bg-indigo-600 text-white font-semibold transition-colors"
               >
-                Login
+                Register
               </button>
             </form>
             <div className="my-6 text-center text-gray-400">Or</div>
