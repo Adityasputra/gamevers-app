@@ -4,33 +4,6 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { BASE_URL } from "@/constants";
 
-const EVENTS = [
-  {
-    img: "/Horizon/image1.jpeg",
-    title: "Future of Web Development: Trends and Innovations",
-    desc: "Discover the latest trends and innovations shaping the future of web development.",
-    buttonLabel: "Register for Free",
-    price: 20000,
-  },
-  {
-    img: "/Horizon/image2.jpeg",
-    title: "WebDev Pro Code-a-Thon: Build a Responsive Website",
-    desc: "Participants will have 48 hours to create a responsive website from scratch using HTML, CSS, and JavaScript.",
-    buttonLabel: "Register for Free",
-  },
-  {
-    img: "/Horizon/image3.jpeg",
-    title: "Ask the Experts: Frontend Web Development",
-    desc: "Join our live Q&A session with our experienced instructors. Get answers to your queries, insights into best practices.",
-    buttonLabel: "Get Ticket",
-  },
-  {
-    img: "/Horizon/image4.jpeg",
-    title: "Web Accessibility: Building Inclusive Websites",
-    desc: "Industry experts will discuss the importance of inclusive design and share strategies for creating websites.",
-    buttonLabel: "Get Ticket",
-  },
-];
 
 async function Hero() {
   return (
