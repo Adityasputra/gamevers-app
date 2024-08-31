@@ -15,7 +15,7 @@ export default function RegisterPages({
       email: formData.get("email"),
       password: formData.get("password"),
     };
-    
+
     const ras = await fetch(BASE_URL + "/register", {
       method: "POST",
       body: JSON.stringify(rawFormData),
@@ -23,27 +23,6 @@ export default function RegisterPages({
         "Content-Type": "application/json",
       },
     });
-  }
-  async function register(formData: FormData) {
-    "use server";
-
-    const newUser = {
-      name: formData.get("name"),
-      username: formData.get("username"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-
-    const res = await fetch(BASE_URL + "/register", {
-      method: "POST",
-      body: JSON.stringify(newUser),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = res.json();
-    redirect("/");
   }
   return (
     <>

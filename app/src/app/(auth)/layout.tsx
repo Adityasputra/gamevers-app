@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import ServerProtected from "@/components/ServerProtected";
+import ServerProtected from "@/components/Server/ServerProtected";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-import ServerPublic from "@/components/ServerPublic";
+import ServerPublic from "@/components/Server/ServerPublic";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "wishlist",
