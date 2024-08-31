@@ -1,16 +1,22 @@
+// `SearchBar.tsx` (Client Component)
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
 
-interface SearchBarProps {
-  onSearch: (query: string) => void;
-}
-
-export default function SearchBar({ onSearch }: SearchBarProps) {
+export default function SearchBar() {
   const [search, setSearch] = useState("");
+  const [products, setProducts] = useState([]);
 
-  const debouncedSearch = useMemo(() => debounce(onSearch, 300), [onSearch]);
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      const res = await fetch(`/api/products?search=${query}`);
+      const data = await res.json();
+      setProducts(data.data);
+    }, 300),
+    []
+  );
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
     setSearch(query);
@@ -18,16 +24,14 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <>
-      <div className="mb-6">
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search for a game"
-          className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
-        />
-      </div>
-    </>
+    <div className="mb-6">
+      <input
+        type="text"
+        value={search}
+        onChange={handleSearchChange}
+        placeholder="Search products..."
+        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none"
+      />
+    </div>
   );
 }

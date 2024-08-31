@@ -1,22 +1,29 @@
+// `ProductList.tsx` (Server Component)
 import CardGames from "@/components/CardGames";
 import Navbar from "@/components/Navbar";
 import { ProductModel } from "@/db/models/product";
+import SearchBar from "@/components/SearchBar"; // Client Component
 import { cookies } from "next/headers";
 
-async function fetchProduct() {
-  const res = await fetch("http://localhost:3000/api/products", {
-    cache: "no-store",
-    headers: {
-      Cookie: cookies().toString(),
-    },
-  });
+async function fetchProduct(search = "") {
+  const res = await fetch(
+    `http://localhost:3000/api/products?search=${search}`,
+    {
+      cache: "no-store",
+      headers: {
+        Cookie: cookies().toString(),
+      },
+    }
+  );
 
   const data = await res.json();
   return data;
 }
 
 export default async function Productlist() {
+  // Fetch products initially
   const data = await fetchProduct();
+
   return (
     <>
       <Navbar />
@@ -45,9 +52,12 @@ export default async function Productlist() {
         </aside>
 
         <main className="flex-1 ml-8">
+          {/* Client-side Search Bar */}
+          <SearchBar />
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {data.data.map((el: ProductModel) => (
-              <CardGames key={`el._id`} product={el} />
+              <CardGames key={el._id.toString()} product={el} />
             ))}
           </div>
         </main>
