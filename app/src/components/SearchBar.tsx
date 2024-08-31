@@ -1,4 +1,3 @@
-// `SearchBar.tsx` (Client Component)
 "use client";
 
 import { useState, useEffect, useCallback } from "react";

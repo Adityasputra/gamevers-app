@@ -1,37 +1,28 @@
 import React from "react";
 import Image from "next/image";
+import { ProductModel } from "@/db/models/product";
 
-interface ProductCardProps {
-  img: string;
-  title: string;
-  desc: string;
-  buttonLabel: string;
-}
+export default function ProductCard({ product }: { product: ProductModel }) {
+  const thumbnailSrc = product.thumbnail || "/Horizon/image1.jpeg";
 
-export function ProductCard({
-  img,
-  title,
-  desc,
-  buttonLabel,
-}: ProductCardProps) {
   return (
-    <div className="w-full rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <div className="w-full max-w-xs bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
       <Image
-        src={img}
-        alt={title}
+        src={thumbnailSrc}
+        alt={product.name}
         width={400}
         height={250}
         className="w-full h-60 object-cover rounded-t-lg"
       />
-      <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
-        <p className="mt-2 text-gray-600">{desc}</p>
-        <button className="mt-4 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700">
-          {buttonLabel}
+      <div className="flex flex-col flex-grow p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          {product.name}
+        </h3>
+        <p className="text-gray-600 mb-4 flex-grow">{product.excerpt}</p>
+        <button className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700 transition-colors duration-300">
+          Learn More
         </button>
       </div>
     </div>
   );
 }
-
-export default ProductCard;

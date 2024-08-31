@@ -1,9 +1,9 @@
 // `ProductList.tsx` (Server Component)
-import CardGames from "@/components/Cards/CardGames";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/global/Navbar";
 import { ProductModel } from "@/db/models/product";
-import SearchBar from "@/components/SearchBar"; // Client Component
+import SearchBar from "@/components/SearchBar";
 import { cookies } from "next/headers";
+import CardGames from "@/components/Cards/CardGames";
 
 async function fetchProduct(search = "") {
   const res = await fetch(

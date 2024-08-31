@@ -1,24 +1,31 @@
+// pages/index.tsx
 import Image from "next/image";
-import { ProductCard } from "@/components/Cards/ProductCard";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/global/Navbar";
 import Link from "next/link";
-import { BASE_URL } from "@/constants";
-import { cookies } from "next/headers";
+import ProductDisplay from "@/components/Home/ProductDisplay";
+import EcommerceDetails from "@/components/Home/EcommerceDetails";
+import PromotionalBanner from "@/components/Home/PromotionalBanner";
+import Footer from "@/components/global/Footer";
+
+import fs from "fs";
+import path from "path";
 
 async function fetchDataProduct() {
-  const res = await fetch(BASE_URL + "/products", {
-    cache: "no-store",
-    headers: {
-      Cookie: cookies().toString(),
-    },
-  });
-
-  const data = await res.json();
-  return data;
+  try {
+    const filePath = path.join(process.cwd(), "public", "product.json");
+    const jsonData = fs.readFileSync(filePath, "utf8");
+    const data = JSON.parse(jsonData);
+    return data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
 
 export default async function Home() {
   const data = await fetchDataProduct();
+  const products = Array.isArray(data.products) ? data.products : [];
+
   return (
     <>
       <Navbar />
@@ -27,7 +34,7 @@ export default async function Home() {
           width={1000}
           height={1000}
           src="/images/home.jpeg"
-          alt="bg-img"
+          alt="background image"
           className="absolute inset-0 ml-auto w-[720px] h-[600px] rounded-bl-[80px] object-cover object-center shadow-2xl shadow-fuchsia-500"
         />
         <div className="relative container mx-auto mt-40 flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -42,7 +49,7 @@ export default async function Home() {
             </p>
             <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:gap-6 lg:justify-start">
               <Link
-                href={"/products"}
+                href="/products"
                 className="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700"
               >
                 View All Games
@@ -84,164 +91,10 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <section className="pt-60 px-8 mt-20 mb-24">
-        <div className="container mx-auto mb-12 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Get All Games</h2>
-          <p className="text-gray-100 text-lg mx-auto w-full px-4 font-normal lg:w-6/12">
-            Join us and experience a fun and thrilling gaming experience.
-          </p>
-        </div>
-        <div className="container mx-auto grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-4">
-          {data.map((product: ) => (
-            <ProductCard key={idx} {...event} />
-          ))}
-        </div>
-      </section>
+      <ProductDisplay products={products} />
+      <EcommerceDetails />
+      <PromotionalBanner />
+      <Footer />
     </>
   );
 }
-// async function Hero() {
-//   return (
-//     <>
-//
-//       <section className="pt-60 px-8 mt-20 mb-24">
-//         <div className="container mx-auto mb-12 text-center">
-//           <h2 className="text-3xl font-bold text-white mb-4">Get All Games</h2>
-//           <p className="text-gray-100 text-lg mx-auto w-full px-4 font-normal lg:w-6/12">
-//             Join us and experience a fun and thrilling gaming experience.
-//           </p>
-//         </div>
-//         <div className="container mx-auto grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-4">
-//           {EVENTS.map((event, idx) => (
-//             <ProductCard key={idx} {...event} />
-//           ))}
-//         </div>
-//       </section>
-//       <div className="relative flex h-[40vh] w-full items-center justify-center bg-gray-900">
-//         <div className="relative w-[80%] h-[70%]">
-//           <Image
-//             src="/Horizon/thumbnail/image1.jpg"
-//             alt="Promo Banner"
-//             layout="fill"
-//             objectFit="cover"
-//             className="rounded-2xl shadow-2xl"
-//           />
-//         </div>
-//         <div className="absolute inset-0 flex items-center justify-center">
-//           <div className="bg-black/50 p-4 rounded-lg shadow-lg">
-//             <p className="text-white text-lg lg:text-2xl font-semibold">
-//               Special Promotion: 30% Off on All Games!
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//       <footer className="bg-gray-800 px-8 py-12 text-white">
-//         <div className="container mx-auto max-w-6xl">
-//           <div className="grid grid-cols-4 gap-12">
-//             <div className="flex flex-col space-y-6">
-//               <h6 className="text-xl font-semibold">Company</h6>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     About Us
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Careers
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Premium Tools
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Blog
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             <div className="flex flex-col space-y-6">
-//               <h6 className="text-xl font-semibold">Pages</h6>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Login
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Register
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Add List
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Contact
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             <div className="flex flex-col space-y-6">
-//               <h6 className="text-xl font-semibold">Legal</h6>
-//               <ul className="space-y-2">
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Terms
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Privacy
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     Team
-//                   </a>
-//                 </li>
-//                 <li>
-//                   <a href="#" className="hover:text-gray-400 transition-colors">
-//                     About Us
-//                   </a>
-//                 </li>
-//               </ul>
-//             </div>
-
-//             <div className="flex flex-col space-y-6">
-//               <h6 className="text-xl font-semibold">Subscribe</h6>
-//               <p className="text-gray-300">
-//                 Get access to subscriber-exclusive deals and be the first to
-//                 know about new sales.
-//               </p>
-//               <label htmlFor="email" className="text-gray-300 font-medium">
-//                 Your Email
-//               </label>
-//               <div className="flex flex-col lg:flex-row gap-4 items-center">
-//                 <input
-//                   id="email"
-//                   type="email"
-//                   placeholder="Email"
-//                   className="w-full p-3 border border-gray-700 rounded-lg text-gray-900 placeholder-gray-500"
-//                 />
-//                 <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-400">
-//                   Subscribe
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </footer>
-//     </>
-//   );
-// }
-
-// export default Hero;
