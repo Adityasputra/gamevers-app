@@ -27,7 +27,10 @@ export default function ProductDisplay({
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {limitedData.length > 0 ? (
               limitedData.map((product: ProductModel) => (
-                <div className="flex justify-center" key={"product._id"}>
+                <div
+                  className="flex justify-center"
+                  key={product._id.toString()}
+                >
                   <ProductCard product={product} />
                 </div>
               ))

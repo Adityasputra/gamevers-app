@@ -1,3 +1,5 @@
+import { hostname } from "os";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -65,6 +67,18 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "images2.alphacoders.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picfiles.alphacoders.com",
+      },
+      {
+        protocol: "https",
+        hostname: "shared.akamai.steamstatic.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picfiles.alphacoders.com",
       },
     ],
   },

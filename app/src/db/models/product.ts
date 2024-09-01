@@ -27,7 +27,7 @@ export const getDB = async () => {
 export const getAllProducts = async (
   search: string = "",
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 8
 ): Promise<ProductModel[]> => {
   try {
     const db = await getDB();
@@ -69,20 +69,19 @@ export const addProduct = async (
   }
 };
 
-export const getProductById = async (
-  id: string
+export const getProductBySlug = async (
+  slug: string
 ): Promise<ProductModel | null> => {
   try {
     const db = await getDB();
-    const objectId = new ObjectId(id);
 
     const product = (await db
       .collection(COLLECTION_PRODUCT)
-      .findOne({ _id: objectId })) as ProductModel;
+      .findOne({ slug })) as ProductModel;
 
     return product;
   } catch (error) {
-    console.error(`Error fetching product by ID ${id}:`, error);
+    console.error(`Error fetching product by slug ${slug}:`, error);
     throw new Error("Failed to fetch product.");
   }
 };

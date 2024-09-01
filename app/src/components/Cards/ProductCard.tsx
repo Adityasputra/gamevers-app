@@ -1,14 +1,11 @@
 import React from "react";
-import Image from "next/image";
 import { ProductModel } from "@/db/models/product";
 
 export default function ProductCard({ product }: { product: ProductModel }) {
-  const thumbnailSrc = product.thumbnail || "/Horizon/image1.jpeg";
-
   return (
     <div className="w-full max-w-xs bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
-      <Image
-        src={thumbnailSrc}
+      <img
+        src={product.thumbnail}
         alt={product.name}
         width={400}
         height={250}

@@ -1,36 +1,37 @@
-// pages/index.tsx
-import Image from "next/image";
 import Navbar from "@/components/global/Navbar";
 import Link from "next/link";
 import ProductDisplay from "@/components/Home/ProductDisplay";
 import EcommerceDetails from "@/components/Home/EcommerceDetails";
 import PromotionalBanner from "@/components/Home/PromotionalBanner";
 import Footer from "@/components/global/Footer";
-
-import fs from "fs";
-import path from "path";
+import { BASE_URL } from "@/constants";
 
 async function fetchDataProduct() {
   try {
-    const filePath = path.join(process.cwd(), "public", "product.json");
-    const jsonData = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(jsonData);
+    const res = await fetch(`${BASE_URL}/api/products`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error("Error fetching products:", error);
-    return [];
+    return { data: [] };
   }
 }
 
 export default async function Home() {
   const data = await fetchDataProduct();
-  const products = Array.isArray(data.products) ? data.products : [];
 
   return (
     <>
       <Navbar />
       <div className="relative flex h-[55vh] w-full items-center px-10">
-        <Image
+        <img
           width={1000}
           height={1000}
           src="/images/home.jpeg"
@@ -59,28 +60,28 @@ export default async function Home() {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              <Image
+              <img
                 width={80}
                 height={80}
                 className="w-20 grayscale opacity-60"
                 src="/home/ps5.png"
                 alt="ps5"
               />
-              <Image
+              <img
                 width={80}
                 height={80}
                 className="w-20 grayscale opacity-60"
                 src="/home/ps4.png"
                 alt="ps4"
               />
-              <Image
+              <img
                 width={80}
                 height={80}
                 className="w-20 grayscale opacity-60"
                 src="/home/vr.png"
                 alt="vr"
               />
-              <Image
+              <img
                 width={80}
                 height={80}
                 className="w-20 grayscale opacity-60"
@@ -91,7 +92,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <ProductDisplay products={products} />
+      <ProductDisplay products={data.data} />
       <EcommerceDetails />
       <PromotionalBanner />
       <Footer />

@@ -1,12 +1,12 @@
 import { BASE_URL } from "@/constants";
 import { redirect } from "next/navigation";
 
-export default function RegisterPages({
+export default async function RegisterPages({
   searchParams,
 }: {
   searchParams: { error: string };
 }) {
-  async function handleRegister(formData: FormData) {
+  const handleRegister = async (formData: FormData) => {
     "use server";
 
     const rawFormData = {
@@ -16,14 +16,16 @@ export default function RegisterPages({
       password: formData.get("password"),
     };
 
-    const ras = await fetch(BASE_URL + "/register", {
+    const res = await fetch(BASE_URL + "/api/register", {
       method: "POST",
       body: JSON.stringify(rawFormData),
       headers: {
         "Content-Type": "application/json",
       },
     });
-  }
+
+    redirect("/login");
+  };
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-gray-900">
@@ -43,7 +45,9 @@ export default function RegisterPages({
             <p className="text-gray-400 text-center mb-6">
               Please Login to Continue
             </p>
-            {searchParams.error}
+            {searchParams.error && (
+              <p className="text-red-500 text-center">{searchParams.error}</p>
+            )}
             <form action={handleRegister}>
               <div className="mb-4">
                 <input

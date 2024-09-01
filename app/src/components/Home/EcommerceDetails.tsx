@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function EcommerceDetails() {
@@ -9,7 +8,7 @@ export default function EcommerceDetails() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:w-1/2 mb-8 md:mb-0">
-              <Image
+              <img
                 src="/images/home.jpeg"
                 alt="E-commerce Details"
                 width={600}
