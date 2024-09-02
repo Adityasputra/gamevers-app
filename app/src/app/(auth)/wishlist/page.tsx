@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import AddToWishlistButton from "@/components/AddToWishlist";
 
 const WishlistPage = () => {
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const userId = "x-user-id";
 
   useEffect(() => {

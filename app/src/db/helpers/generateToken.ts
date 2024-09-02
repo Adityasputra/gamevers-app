@@ -6,10 +6,6 @@ export const signToken = (payload: JwtPayload) => {
   return jwt.sign(payload, JWT_SECRET);
 };
 
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_SECRET);
-};
-
 export const verifyTokenJose = async <T>(token: string) => {
   const secretKey = new TextEncoder().encode(JWT_SECRET);
   const payloadJose = await jose.jwtVerify<T>(token, secretKey);

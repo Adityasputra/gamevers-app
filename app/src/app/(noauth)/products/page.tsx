@@ -66,7 +66,7 @@ export default function ListProduct() {
   };
 
   const handleAddToWishlist = async (productId: string) => {
-    const userId = "your-user-id"; // Ganti dengan user ID yang sesuai
+    const userId = "your-user-id";
 
     try {
       const response = await fetch(`${BASE_URL}/api/wishlist`, {
