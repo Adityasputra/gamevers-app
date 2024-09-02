@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { ObjectId } from "mongodb";
-import { addWishlist, WishlistWithDetails } from "@/db/models/wishlist";
+import { addWishlist } from "@/db/models/wishlist";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const userId = request.headers.get("x-user-id"); // Gunakan request.headers.get()
+    const userId = request.headers.get("x-user-id");
 
     if (!userId) {
       return NextResponse.json(
