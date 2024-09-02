@@ -1,168 +1,137 @@
-import { addWishlist } from "@/db/models/wishlist";
-import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 import { z } from "zod";
+import { ObjectId } from "mongodb";
+import { addWishlist, WishlistWithDetails } from "@/db/models/wishlist";
 
 export async function POST(request: Request) {
   try {
-    let body = await request.json();
-    const userId = headers().get("x-user-id");
+    const body = await request.json();
+    const userId = request.headers.get("x-user-id"); // Gunakan request.headers.get()
 
     if (!userId) {
-      return Response.json(
-        {
-          message: "User ID header is missing",
-        },
-        {
-          status: 400,
-        }
+      return NextResponse.json(
+        { message: "User ID header is missing" },
+        { status: 400 }
       );
     }
 
-    body = { ...body, userId };
-
     const parsedData = z
       .object({
-        userId: z.string(),
         productId: z.string(),
       })
       .safeParse(body);
 
     if (!parsedData.success) {
-      throw parsedData.error;
-    }
-
-    const wishlist = await addWishlist(body);
-    return Response.json(wishlist, {
-      status: 201,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errorPath = error.issues[0].path[0];
-      const errorMessage = error.issues[0].message;
-
-      return Response.json(
-        {
-          error: {
-            message: `${errorPath} ${errorMessage}`,
-          },
-        },
-        {
-          status: 400,
-        }
+      const errorPath = parsedData.error.issues[0].path[0];
+      const errorMessage = parsedData.error.issues[0].message;
+      return NextResponse.json(
+        { error: { message: `${errorPath} ${errorMessage}` } },
+        { status: 400 }
       );
     }
 
-    console.error(error);
-    return Response.json(
-      {
-        message: "Internal Server Error",
-      },
-      {
-        status: 500,
-      }
+    const wishlistData = {
+      userId: new ObjectId(userId),
+      productId: new ObjectId(parsedData.data.productId),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await addWishlist(wishlistData);
+    return NextResponse.json(result, { status: 201 });
+  } catch (error) {
+    console.error("Error in POST handler:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
     );
   }
 }
 
-import { ObjectId } from "mongodb";
-import {
-  COLLECTION_WISHLIST,
-  COLLECTION_USER,
-  COLLECTION_PRODUCT,
-  DATABASE_NAME,
-} from "@/constants";
-import { getDB } from "@/db/models/user";
+// import {
+//   COLLECTION_WISHLIST,
+//   COLLECTION_USER,
+//   COLLECTION_PRODUCT,
+// } from "@/constants";
+// import { getDB } from "@/db/models/wishlist";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { userId: string } }
-) {
-  try {
-    const db = await getDB();
-    const userObjectId = new ObjectId(params.userId);
+// export async function GET(
+//   request: Request,
+//   { params }: { params: { userId: string } }
+// ) {
+//   try {
+//     const db = await getDB();
+//     const userObjectId = new ObjectId(params.userId);
 
-    const wishlistWithDetails = await db
-      .collection(COLLECTION_WISHLIST)
-      .aggregate([
-        {
-          $match: { userId: userObjectId },
-        },
-        {
-          $lookup: {
-            from: COLLECTION_PRODUCT,
-            localField: "productId",
-            foreignField: "_id",
-            as: "product",
-          },
-        },
-        {
-          $unwind: "$product",
-        },
-        {
-          $lookup: {
-            from: COLLECTION_USER,
-            localField: "userId",
-            foreignField: "_id",
-            as: "user",
-          },
-        },
-        {
-          $unwind: "$user",
-        },
-        {
-          $project: {
-            _id: 1,
-            userId: 1,
-            productId: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            product: {
-              _id: 1,
-              name: 1,
-              slug: 1,
-              description: 1,
-              excerpt: 1,
-              price: 1,
-              tags: 1,
-              thumbnail: 1,
-              images: 1,
-              createdAt: 1,
-              updatedAt: 1,
-            },
-            user: {
-              _id: 1,
-              name: 1,
-              username: 1,
-              email: 1,
-            },
-          },
-        },
-      ])
-      .toArray();
+//     const wishlistWithDetails = await db
+//       .collection(COLLECTION_WISHLIST)
+//       .aggregate<WishlistWithDetails>([
+//         { $match: { userId: userObjectId } },
+//         {
+//           $lookup: {
+//             from: COLLECTION_PRODUCT,
+//             localField: "productId",
+//             foreignField: "_id",
+//             as: "product",
+//           },
+//         },
+//         { $unwind: "$product" },
+//         {
+//           $lookup: {
+//             from: COLLECTION_USER,
+//             localField: "userId",
+//             foreignField: "_id",
+//             as: "user",
+//           },
+//         },
+//         { $unwind: "$user" },
+//         {
+//           $project: {
+//             _id: 1,
+//             userId: 1,
+//             productId: 1,
+//             createdAt: 1,
+//             updatedAt: 1,
+//             product: {
+//               _id: 1,
+//               name: 1,
+//               slug: 1,
+//               description: 1,
+//               excerpt: 1,
+//               price: 1,
+//               tags: 1,
+//               thumbnail: 1,
+//               images: 1,
+//               createdAt: 1,
+//               updatedAt: 1,
+//             },
+//             user: {
+//               _id: 1,
+//               name: 1,
+//               username: 1,
+//               email: 1,
+//             },
+//           },
+//         },
+//       ])
+//       .toArray();
 
-    if (wishlistWithDetails.length === 0) {
-      return Response.json(
-        {
-          message: "No wishlist items found for this user",
-        },
-        {
-          status: 404,
-        }
-      );
-    }
+//     if (wishlistWithDetails.length === 0) {
+//       return NextResponse.json(
+//         { message: "No wishlist items found for this user" },
+//         { status: 404 }
+//       );
+//     }
 
-    return Response.json(wishlistWithDetails, {
-      status: 200,
-    });
-  } catch (error) {
-    console.log(error);
-    return Response.json(
-      {
-        message: "Internal Server Error",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
+//     console.log(wishlistWithDetails, "<<<< wishlist");
+//     return NextResponse.json(wishlistWithDetails, { status: 200 });
+//   } catch (error) {
+//     console.error("Error fetching wishlist:", error);
+//     return NextResponse.json(
+//       { message: "Internal Server Error" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+

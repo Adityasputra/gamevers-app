@@ -1,12 +1,7 @@
 import { BASE_URL } from "@/constants";
 import { ProductModel } from "@/db/models/product";
-import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/pagination";
-import { Pagination } from "swiper/modules";
 import Navbar from "@/components/global/Navbar";
+import AddToWishlistButton from "@/components/AddToWishlist";
 
 interface ProductPageProps {
   params: {
@@ -16,6 +11,8 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = params;
+  const userId = "x-user-id";
+
   const response = await fetch(`${BASE_URL}/api/products/${slug}`);
   if (!response.ok) {
     if (response.status === 404) {
@@ -33,7 +30,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-8 pt-24">
+      <div className="container mx-auto px-4 py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex justify-center">
             <img
@@ -44,9 +41,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="rounded-lg shadow-lg object-cover"
             />
           </div>
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between space-y-4">
             <div>
-              <h1 className="text-3xl text-gray-100 font-bold mb-4">
+              <h1 className="text-3xl font-bold text-gray-100 mb-4">
                 {product.name}
               </h1>
               <p className="text-xl text-gray-100 mb-4">
@@ -56,11 +53,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </span>
               </p>
               <p className="text-gray-100 mb-6">{product.description}</p>
-              <div className="text-sm text-gray-100 mb-6">
+              <div className="flex flex-wrap gap-2 text-sm text-gray-100 mb-6">
                 {product.tags?.map((tag) => (
                   <span
                     key={tag}
-                    className="bg-gray-700 p-2 rounded mx-1 text-white"
+                    className="bg-gray-700 py-1 px-3 rounded text-white"
                   >
                     {tag}
                   </span>
@@ -71,30 +68,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <button className="px-6 py-3 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition duration-300">
                 Add to Cart
               </button>
-              <button className="px-6 py-3 bg-gray-200 text-sm font-medium rounded-md hover:bg-gray-300 transition duration-300">
-                Add to Wishlist
-              </button>
+              <AddToWishlistButton
+                productId={product._id.toString()}
+                userId={userId}
+              />
             </div>
           </div>
         </div>
-
-        <div className="mt-8">
-          {/* <Swiper
-          modules={[Pagination]}
-          spaceBetween={50}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           {product.images?.slice(0, 4).map((image, index) => (
-            <SwiperSlide key={index}>
+            <div
+              key={index}
+              className="h-32 overflow-hidden rounded-lg shadow-md"
+            >
               <img
                 src={image}
                 alt={`${product.name} image ${index + 1}`}
-                className="w-full h-60 object-cover rounded-md"
+                className="w-full h-full object-cover"
               />
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper> */}
         </div>
       </div>
     </>
