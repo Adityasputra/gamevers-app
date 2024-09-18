@@ -18,7 +18,6 @@ export default function ListProduct() {
   const [wishlistStatus, setWishlistStatus] = useState<Record<string, string>>(
     {}
   );
-
   const categories = [
     "PC",
     "Playstation 5",
@@ -28,6 +27,7 @@ export default function ListProduct() {
   ];
 
   useEffect(() => {
+    console.log(currentPage);
     setLoading(true);
     fetchProducts(currentPage);
   }, [currentPage, debouncedSearchTerm, selectedCategory]);
@@ -46,6 +46,7 @@ export default function ListProduct() {
       }
 
       setHasMore(result.data.length === itemsPerPage);
+      console.log("fetchdata");
     } catch (error) {
       console.error("Error fetching products:", error);
       setHasMore(false);
@@ -56,6 +57,7 @@ export default function ListProduct() {
 
   const fetchMoreData = () => {
     if (hasMore && !isLoading) {
+      console.log("fecthmore");
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };

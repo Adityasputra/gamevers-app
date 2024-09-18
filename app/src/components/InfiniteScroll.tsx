@@ -21,6 +21,7 @@ export default function InfiniteScrollComponent({
   return (
     <InfiniteScroll
       dataLength={data.length}
+      height={500}
       next={fetchMoreData}
       hasMore={hasMore}
       loader={<p>Loading more products...</p>}
@@ -29,7 +30,7 @@ export default function InfiniteScrollComponent({
     >
       {data.map((product) => (
         <CardProduct
-          key={"product._id"}
+          key={`${product._id}`}
           product={product}
           handleAddToWishlist={handleAddToWishlist}
           wishlistStatus={wishlistStatus}
