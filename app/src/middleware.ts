@@ -1,51 +1,53 @@
-import { cookies } from "next/headers";
+import { verifyTokenJose } from "@/db/utils/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyTokenJose } from "./db/utils/generateToken";
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/api/wishlist")) {
-    const authorization = cookies().get("Authorization");
+  const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/api/wishlist")) {
+    const authorization = request.cookies.get("Authorization");
+
     if (!authorization) {
-      console.log("Authorization cookie not found");
+      console.warn("Authorization cookie not found");
       return NextResponse.json(
-        {
-          message: "Authentication Failed",
-        },
-        {
-          status: 401,
-        }
+        { message: "Authentication Failed" },
+        { status: 401 }
       );
     }
 
-    const access_token = authorization.value.split(" ")[1];
-    console.log("Access Token:", access_token);
+    const rawToken = authorization.value;
+
+    if (!rawToken.startsWith("Bearer ")) {
+      console.warn("Invalid Authorization format");
+      return NextResponse.json(
+        { message: "Invalid token format" },
+        { status: 401 }
+      );
+    }
+
+    const access_token = rawToken.split(" ")[1];
 
     try {
-      const decode = await verifyTokenJose<{ _id: string }>(access_token);
-      console.log("Decoded Token:", decode);
+      const decoded = await verifyTokenJose<{ _id: string }>(access_token);
+      console.log("Decoded user ID:", decoded._id);
 
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set("x-user-id", decode._id);
+      requestHeaders.set("x-user-id", decoded._id);
 
-      const response = NextResponse.next({
+      return NextResponse.next({
         request: {
           headers: requestHeaders,
         },
       });
-
-      return response;
     } catch (error) {
       console.error("Token verification failed:", error);
       return NextResponse.json(
-        {
-          message: "Authentication Failed",
-        },
-        {
-          status: 401,
-        }
+        { message: "Authentication Failed" },
+        { status: 401 }
       );
     }
   }
+
   return NextResponse.next();
 }
 
