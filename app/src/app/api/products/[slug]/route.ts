@@ -1,38 +1,36 @@
-import { getProductBySlug } from "@/db/models/product";
+import { NextRequest, NextResponse } from "next/server";
+import { getProductBySlug } from "@/db/models/Product";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const product = await getProductBySlug(params.slug);
+    const slug = request.nextUrl.pathname.split("/").pop(); // ambil slug dari URL
 
-    if (!product) {
-      return new Response(
-        JSON.stringify({
-          message: "Product not found",
-        }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
+    if (!slug) {
+      return NextResponse.json(
+        { message: "Slug is required" },
+        { status: 400 }
       );
     }
 
-    return new Response(JSON.stringify(product), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    const product = await getProductBySlug(slug);
+
+    if (!product) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({
-        message: "Internal Server Error",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    console.error(
+      "Error fetching product by slug:",
+      error instanceof Error ? error.message : error
+    );
+
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
     );
   }
 }

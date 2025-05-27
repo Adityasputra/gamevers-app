@@ -1,100 +1,83 @@
-import Navbar from "@/components/global/Navbar";
+import AboutUs from "@/components/layout/AboutUs";
+import Footer from "@/components/layout/Footer";
+import JoinUs from "@/components/layout/JoinUs";
+import Navbar from "@/components/layout/Navbar";
+import Promotion from "@/components/layout/Promotion";
+import Slide from "@/components/layout/Slide";
+import Image from "next/image";
 import Link from "next/link";
-import ProductDisplay from "@/components/Home/ProductDisplay";
-import EcommerceDetails from "@/components/Home/EcommerceDetails";
-import PromotionalBanner from "@/components/Home/PromotionalBanner";
-import Footer from "@/components/global/Footer";
-import { BASE_URL } from "@/constants";
 
-async function fetchDataProduct() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/products`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch products");
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return { data: [] };
-  }
-}
-
-export default async function Home() {
-  const data = await fetchDataProduct();
-
+export default function Home() {
   return (
     <>
       <Navbar />
-      <div className="relative flex h-[55vh] w-full items-center px-10">
-        <img
-          width={1000}
-          height={1000}
-          src="/images/home.jpeg"
-          alt="background image"
-          className="absolute inset-0 ml-auto w-[720px] h-[600px] rounded-bl-[80px] object-cover object-center shadow-2xl shadow-fuchsia-500"
-        />
-        <div className="relative container mx-auto mt-40 flex flex-col items-center lg:items-start text-center lg:text-left">
-          <div className="w-full rounded-xl border border-white bg-white/90 py-10 px-8 shadow-lg shadow-black/10 backdrop-blur-sm backdrop-saturate-200 lg:w-3/4">
-            <h1 className="text-blue-gray-800 text-3xl lg:text-5xl font-bold lg:max-w-3xl">
-              Unlock New Experiences by Playing New Games
+
+      <main className="bg-[#2b2b2b] text-white">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 py-20 max-w-screen-xl flex flex-col-reverse md:flex-row items-center gap-12">
+          {/* Text Column */}
+          <div className="w-full md:w-1/2 text-center md:text-left">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+              Discover Real Games & Play Experiences
             </h1>
-            <p className="mt-6 mb-10">
+            <p className="mt-6 text-lg text-gray-300">
               Are you ready to embark on an exciting journey into the world of
               gaming? No need to wait any longer! We are your trusted partner to
               enjoy a wide range of games.
             </p>
-            <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:gap-6 lg:justify-start">
-              <Link
-                href="/products"
-                className="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700"
+            <Link href="/get-started" passHref>
+              <button
+                className="inline-block mt-8 bg-gradient-to-r from-[#A259FF] to-[#923AE8] text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
+                aria-label="Get Started"
               >
-                View All Games
-              </Link>
-              <button className="border border-gray-800 text-gray-800 py-2 px-4 rounded hover:bg-gray-100">
-                See Pricing
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5 inline mr-2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
+                  />
+                </svg>
+                Get Started
               </button>
-            </div>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              <img
-                width={80}
-                height={80}
-                className="w-20 grayscale opacity-60"
-                src="/home/ps5.png"
-                alt="ps5"
+            </Link>
+          </div>
+
+          {/* Image Column */}
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="relative w-full max-w-[450px] h-[450px] md:h-[500px] transform transition-transform duration-300 hover:scale-105 rounded-b-xl hover:shadow-purple hover:shadow-lg">
+              <Image
+                src="/rise-humanoids-with-advanced-headgear-generative-ai.webp"
+                alt="Humanoid figure in futuristic gear, representing a game character"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-xl shadow-lg"
+                priority
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <img
-                width={80}
-                height={80}
-                className="w-20 grayscale opacity-60"
-                src="/home/ps4.png"
-                alt="ps4"
-              />
-              <img
-                width={80}
-                height={80}
-                className="w-20 grayscale opacity-60"
-                src="/home/vr.png"
-                alt="vr"
-              />
-              <img
-                width={80}
-                height={80}
-                className="w-20 grayscale opacity-60"
-                src="/home/pc.png"
-                alt="pc"
-              />
+              <div className="absolute bottom-0 left-0 right-0 bg-[#3B3B3B]/80 text-white text-center rounded-b-xl py-4">
+                <h2 className="text-2xl md:text-3xl font-semibold">
+                  GameVers
+                </h2>
+                <p className="text-lg font-light">Connect, Play, Dominate</p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <ProductDisplay products={data.data} />
-      <EcommerceDetails />
-      <PromotionalBanner />
+        </section>
+
+        {/* Other Sections */}
+        <Slide />
+        <AboutUs />
+        <Promotion />
+        <JoinUs />
+      </main>
+
       <Footer />
     </>
   );

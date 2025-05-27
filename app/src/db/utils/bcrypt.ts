@@ -10,3 +10,5 @@ export const comparePassword = (
 ): boolean => {
   return bcrypt.compareSync(password, hashedPassword);
 };
+
+

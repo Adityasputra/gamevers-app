@@ -1,137 +1,107 @@
-import { NextResponse } from "next/server";
+import {
+  createWishlist,
+  getWishlist,
+  getWishlistById,
+} from "@/db/models/Wishlist";
+import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { ObjectId } from "mongodb";
-import { addWishlist } from "@/db/models/wishlist";
 
-export async function POST(request: Request) {
+const wishlistSchema = z.object({
+  userId: z
+    .string()
+    .refine((val) => ObjectId.isValid(val), { message: "Invalid userId" }),
+  productId: z
+    .string()
+    .refine((val) => ObjectId.isValid(val), { message: "Invalid productId" }),
+});
+
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const userId = request.headers.get("x-user-id");
+    const rawBody = await request.json();
+    const userId = (await headers()).get("x-user-id");
 
     if (!userId) {
       return NextResponse.json(
-        { message: "User ID header is missing" },
-        { status: 400 }
+        { error: { message: "Unauthorized: user ID missing" } },
+        { status: 401 }
       );
     }
 
-    const parsedData = z
-      .object({
-        productId: z.string(),
-      })
-      .safeParse(body);
+    const input = { ...rawBody, userId };
 
-    if (!parsedData.success) {
-      const errorPath = parsedData.error.issues[0].path[0];
-      const errorMessage = parsedData.error.issues[0].message;
+    const validated = wishlistSchema.safeParse(input);
+
+    if (!validated.success) {
       return NextResponse.json(
-        { error: { message: `${errorPath} ${errorMessage}` } },
+        {
+          error: {
+            message: validated.error.issues
+              .map((issue) => issue.message)
+              .join(", "),
+          },
+        },
         { status: 400 }
       );
     }
 
-    const wishlistData = {
-      userId: new ObjectId(userId),
-      productId: new ObjectId(parsedData.data.productId),
+    const { userId: validUserId, productId } = validated.data;
+
+    const existing = await getWishlistById(productId, validUserId);
+    if (existing) {
+      return NextResponse.json(
+        { error: { message: "Product already in wishlist" } },
+        { status: 400 }
+      );
+    }
+
+    const result = await createWishlist({
+      userId: new ObjectId(validUserId),
+      productId: new ObjectId(productId),
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    });
 
-    const result = await addWishlist(wishlistData);
-    return NextResponse.json(result, { status: 201 });
-  } catch (error) {
-    console.error("Error in POST handler:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Wishlist item created",
+        wishlistId: result.insertedId,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("POST /wishlist error:", error);
+
+    return NextResponse.json(
+      { error: { message: "Internal Server Error" } },
       { status: 500 }
     );
   }
 }
 
-// import {
-//   COLLECTION_WISHLIST,
-//   COLLECTION_USER,
-//   COLLECTION_PRODUCT,
-// } from "@/constants";
-// import { getDB } from "@/db/models/wishlist";
+export async function GET(request: NextRequest) {
+  try {
+    const userId = (await headers()).get("x-user-id");
 
-// export async function GET(
-//   request: Request,
-//   { params }: { params: { userId: string } }
-// ) {
-//   try {
-//     const db = await getDB();
-//     const userObjectId = new ObjectId(params.userId);
+    if (!userId || !ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        { error: { message: "Invalid or missing user ID" } },
+        { status: 400 }
+      );
+    }
 
-//     const wishlistWithDetails = await db
-//       .collection(COLLECTION_WISHLIST)
-//       .aggregate<WishlistWithDetails>([
-//         { $match: { userId: userObjectId } },
-//         {
-//           $lookup: {
-//             from: COLLECTION_PRODUCT,
-//             localField: "productId",
-//             foreignField: "_id",
-//             as: "product",
-//           },
-//         },
-//         { $unwind: "$product" },
-//         {
-//           $lookup: {
-//             from: COLLECTION_USER,
-//             localField: "userId",
-//             foreignField: "_id",
-//             as: "user",
-//           },
-//         },
-//         { $unwind: "$user" },
-//         {
-//           $project: {
-//             _id: 1,
-//             userId: 1,
-//             productId: 1,
-//             createdAt: 1,
-//             updatedAt: 1,
-//             product: {
-//               _id: 1,
-//               name: 1,
-//               slug: 1,
-//               description: 1,
-//               excerpt: 1,
-//               price: 1,
-//               tags: 1,
-//               thumbnail: 1,
-//               images: 1,
-//               createdAt: 1,
-//               updatedAt: 1,
-//             },
-//             user: {
-//               _id: 1,
-//               name: 1,
-//               username: 1,
-//               email: 1,
-//             },
-//           },
-//         },
-//       ])
-//       .toArray();
+    const wishlist = await getWishlist(userId);
 
-//     if (wishlistWithDetails.length === 0) {
-//       return NextResponse.json(
-//         { message: "No wishlist items found for this user" },
-//         { status: 404 }
-//       );
-//     }
+    return NextResponse.json(wishlist, {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("GET /wishlist error:", error);
 
-//     console.log(wishlistWithDetails, "<<<< wishlist");
-//     return NextResponse.json(wishlistWithDetails, { status: 200 });
-//   } catch (error) {
-//     console.error("Error fetching wishlist:", error);
-//     return NextResponse.json(
-//       { message: "Internal Server Error" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-
+    return NextResponse.json(
+      { error: { message: "Failed to fetch wishlist" } },
+      { status: 500 }
+    );
+  }
+}

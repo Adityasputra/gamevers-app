@@ -1,28 +1,49 @@
-import { createUser, getUserByEmail, UserModelInput } from "@/db/models/user";
+import {
+  createUser,
+  getUserByEmail,
+  getUserByUsername,
+  UserModelInput,
+} from "@/db/models/User";
 import { z } from "zod";
+
+const userSchema = z.object({
+  name: z.string().optional(),
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string().min(5),
+});
 
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as UserModelInput;
-    const parsedData = z
-      .object({
-        name: z.string().optional(),
-        username: z.string(),
-        email: z.string().email(),
-        password: z.string().min(5),
-      })
-      .safeParse(body);
+    const parsedData = userSchema.safeParse(body);
 
     if (!parsedData.success) {
       throw parsedData.error;
     }
 
-    const checkEamil = await getUserByEmail(parsedData.data.email);
-    if (checkEamil) {
+    const { email, username } = parsedData.data;
+
+    const checkEmail = await getUserByEmail(email);
+    if (checkEmail) {
       return Response.json(
         {
           error: {
             message: "Email is already registered",
+          },
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const checkUsername = await getUserByUsername(username);
+    if (checkUsername) {
+      return Response.json(
+        {
+          error: {
+            message: "Username is already taken",
           },
         },
         {
@@ -37,14 +58,16 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error.issues);
-      const errorPath = error.issues[0].path[0];
-      const errorMessage = error.issues[0].message;
+      const errors = error.issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+      }));
 
       return Response.json(
         {
           error: {
-            message: `${errorPath} ${errorMessage}`,
+            message: "Validation Failed",
+            details: errors,
           },
         },
         {
@@ -53,6 +76,7 @@ export async function POST(request: Request) {
       );
     }
 
+    console.error("Unexpected error in POST /register:", error);
     return Response.json(
       {
         message: "Internal Server Error",

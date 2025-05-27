@@ -1,62 +1,49 @@
-"use client";
-import { useEffect, useState } from "react";
-import AddToWishlistButton from "@/components/AddToWishlist";
+import { redirect } from "next/navigation";
+import NavbarWishlist from "./NavbarWishlist";
+import { cookies } from "next/headers";
+import { BASE_URL } from "@/constant";
 
-const WishlistPage = () => {
-  const [wishlist, setWishlist] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const userId = "x-user-id";
-
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const response = await fetch(`/api/wishlist/user/${userId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch wishlist.");
-        }
-        const data = await response.json();
-        setWishlist(data);
-      } catch (error) {
-        setError("Failed to fetch wishlist.");
-      } finally {
-        setLoading(false);
+export default function Wishlist() {
+  const fetchWishlist = async () => {
+    const res = await fetch(BASE_URL + "/api/wishlist", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookies().toString(),
+      },
+    });
+    if (!res.ok) {
+      if (res.status === 403) {
+        return redirect("/login");
       }
-    };
-
-    fetchWishlist();
-  }, [userId]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-
+      return redirect("/login");
+    }
+    const result = await res.json();
+    return result;
+  };
   return (
-    <div className="container mx-auto p-8 pt-24">
-      <h1 className="text-3xl font-bold mb-4">My Wishlist</h1>
-      {wishlist.length === 0 ? (
-        <p>No items in your wishlist.</p>
-      ) : (
-        <ul>
-          {wishlist.map((item) => (
-            <li
-              key={item._id}
-              className="flex items-center mb-4 p-4 border rounded-lg"
-            >
-              <div className="flex-grow">
-                <h2 className="text-xl font-semibold">{item.product.name}</h2>
-                <p>Price: ${item.product.price?.toFixed(2)}</p>
-                <p>{item.product.description}</p>
-              </div>
-              <AddToWishlistButton
-                productId={item.product._id.toString()}
-                userId={userId}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <>
+      <NavbarWishlist />
+      <div className="container mx-auto mt-20">
+        <h1 className="text-purple text-3xl font-semibold mt-8">Wishlist</h1>
+        <p className="text-gray-600 mt-2">
+          Here are the items you have added to your wishlist.
+        </p>
+        <div>
+          {fetchWishlist()
+            .then((data) => {
+              return data.map((item: any) => (
+                <div key={item.id} className="border-b py-4 items-center">
+                  <h2 className="text-xl font-semibold">{item.product.name}</h2>
+                  <p className="text-gray-600">{item.product.description}</p>
+                </div>
+              ));
+            })
+            .catch((error) => {
+              console.error("Error fetching wishlist:", error);
+            })}
+        </div>
+      </div>
+    </>
   );
-};
-
-export default WishlistPage;
+}

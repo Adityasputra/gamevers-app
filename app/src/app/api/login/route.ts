@@ -1,76 +1,65 @@
-import { signToken } from "@/db/helpers/generateToken";
-import { comparedPass } from "@/db/utils/bcrypt";
-import { getUserByEmail } from "@/db/models/user";
-import { NextRequest, NextResponse } from "next/server";
+import { getUserByEmail } from "@/db/models/User";
+import { comparePassword } from "@/db/utils/bcrypt";
+import { signToken } from "@/db/utils/jwt";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const User = z.object({
+const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(5),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body: { email: string; password: string } = await request.json();
-    const validation = User.safeParse(body);
+    const body = await request.json();
+    const parsedData = loginSchema.safeParse(body);
 
-    if (!validation.success) {
-      throw validation.error;
+    if (!parsedData.success) {
+      return NextResponse.json(
+        {
+          error: {
+            message: "Invalid input",
+            details: parsedData.error.issues,
+          },
+        },
+        { status: 400 }
+      );
     }
 
-    const user = await getUserByEmail(body.email);
+    const { email, password } = parsedData.data;
+
+    const user = await getUserByEmail(email);
     if (!user) {
       return NextResponse.json(
-        {
-          message: "Invalid email or password",
-        },
-        {
-          status: 401,
-        }
+        { error: { message: "Invalid email or password" } },
+        { status: 401 }
       );
     }
 
-    const isPasswordValid = comparedPass(body.password, user.password);
+    const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        {
-          message: "Invalid email or password",
-        },
-        {
-          status: 401,
-        }
+        { error: { message: "Invalid email or password" } },
+        { status: 401 }
       );
     }
 
-    const access_token = signToken({
-      _id: user._id,
+    const access_token = signToken({ _id: user._id });
+
+    const response = NextResponse.json({ access_token });
+
+    response.cookies.set("Authorization", `Bearer ${access_token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "lax",
     });
 
-    const response = NextResponse.json({
-      access_token,
-    });
-
-    response.cookies.set("Authorization", `Bearer ${access_token}`);
     return response;
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errorPath = error.issues[0].path[0];
-      const errorMessage = error.issues[0].message;
-
-      return NextResponse.json(
-        {
-          message: `${errorPath} ${errorMessage}`,
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
+    console.error("Login error:", error);
     return NextResponse.json(
-      {
-        message: "Internal Server Error",
-      },
+      { message: "Internal Server Error" },
       { status: 500 }
     );
   }
