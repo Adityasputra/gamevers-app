@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getMongoClientInstance } from "../config/mongodb";
-import { hashPass } from "../helpers/hash";
+import { hashPass } from "../helpers/bcrypt";
 import { COLLECTION_USER, DATABASE_NAME } from "../../constants";
 
 export interface UserModel {
