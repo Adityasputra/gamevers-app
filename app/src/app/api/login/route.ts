@@ -1,5 +1,5 @@
 import { signToken } from "@/db/helpers/generateToken";
-import { comparedPass } from "@/db/helpers/bcrypt";
+import { comparedPass } from "@/db/utils/bcrypt";
 import { getUserByEmail } from "@/db/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";

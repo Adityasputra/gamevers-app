@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyTokenJose } from "./db/helpers/generateToken";
+import { verifyTokenJose } from "./db/utils/generateToken";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/wishlist")) {
