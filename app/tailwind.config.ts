@@ -8,18 +8,36 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        purple: "#A259FF",
+        darkPurple: "#923AE8",
+        choc: "#3B3B3B",
+        darkChoc: "#2C2C2C",
       },
-      opacity: {
-        "15": "0.9",
-        "35": "0.35",
-        "65": "0.65",
+      fontSize: {
+        xs: "0.75rem",
+        sm: "0.875rem",
+        base: "1rem",
+        lg: "1.125rem",
+        xl: "1.25rem",
+        "2xl": "1.5rem",
+      },
+      spacing: {
+        18: "4.5rem",
+        26: "6.5rem",
+      },
+      borderRadius: {
+        lg: "0.75rem", // 12px
+        xl: "1rem", // 16px
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // require('@tailwindcss/typography'),
+    // require('@tailwindcss/forms'),
+  ],
 };
+
 export default config;
