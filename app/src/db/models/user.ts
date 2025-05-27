@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getMongoClientInstance } from "../config";
+import { getMongoClientInstance } from "../config/mongodb";
 import { hashPass } from "../helpers/hash";
 import { COLLECTION_USER, DATABASE_NAME } from "../../constants";
 

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getMongoClientInstance } from "../config";
+import { getMongoClientInstance } from "../config/mongodb";
 import {
   COLLECTION_PRODUCT,
   COLLECTION_USER,
