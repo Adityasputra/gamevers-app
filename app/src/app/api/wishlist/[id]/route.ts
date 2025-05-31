@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 
 export async function DELETE(request: NextRequest) {
   try {
-    // Ambil id dari pathname, misalnya /api/wishlist/6651a7...
     const id = request.nextUrl.pathname.split("/").pop();
 
     if (!id || !ObjectId.isValid(id)) {
