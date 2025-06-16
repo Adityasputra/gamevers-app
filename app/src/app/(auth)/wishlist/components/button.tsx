@@ -53,7 +53,6 @@ export function RemoveFromWishlistButton({
       alert("Removed from wishlist.");
     } catch (error) {
       console.error("Failed to remove from wishlist:", error);
-      alert("Failed to remove from wishlist.");
     } finally {
       setIsLoading(false);
     }
@@ -63,9 +62,15 @@ export function RemoveFromWishlistButton({
     <button
       onClick={handleRemoveFromWishlist}
       disabled={isLoading}
-      className="bg-red-500 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+      className={`relative inline-flex items-center justify-center px-5 py-2 font-bold text-sm tracking-wider uppercase 
+        bg-gradient-to-r from-[#994ECC] to-[#3E187A] text-white rounded-md
+        shadow-md transition-all duration-300
+        hover:shadow-[#923AE8]/50 hover:scale-105 
+        disabled:opacity-50 disabled:cursor-not-allowed
+        after:absolute after:inset-0 after:rounded-md after:border after:border-[#A259FF]/30
+        hover:after:border-[#923AE8]/60`}
     >
-      {isLoading ? "Removing..." : "Remove from Wishlist"}
+      {isLoading ? "Removing..." : "Remove"}
     </button>
   );
 }

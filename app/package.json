@@ -13,6 +13,7 @@
     "framer-motion": "^12.15.0",
     "jose": "^5.8.0",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.513.0",
     "mongodb": "^6.8.0",
     "next": "^15.3.2",
     "react": "^19.1.0",

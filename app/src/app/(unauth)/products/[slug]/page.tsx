@@ -23,6 +23,7 @@ export default function ProductBySlug() {
 
   useEffect(() => {
     if (!slug) return;
+
     const fetchProduct = async () => {
       try {
         setLoading(true);
@@ -34,6 +35,7 @@ export default function ProductBySlug() {
           }
           throw new Error("Failed to fetch product.");
         }
+
         const productData: ProductModel = await response.json();
         setProduct(productData);
       } catch (err: any) {
@@ -46,47 +48,40 @@ export default function ProductBySlug() {
     fetchProduct();
   }, [slug]);
 
-  if (loading) {
+  if (loading)
     return <div className="text-center text-white mt-20">Loading...</div>;
-  }
-
-  if (error) {
+  if (error)
     return <div className="text-center text-red-500 mt-20">{error}</div>;
-  }
-
-  if (!product) {
+  if (!product)
     return (
       <div className="text-center text-white mt-20">Product not found.</div>
     );
-  }
 
   return (
     <>
       <NavbarDetail />
 
       <div
-        className="w-full h-[60vh] bg-cover bg-center flex items-end justify-start mb-10"
+        className="relative w-full h-[60vh] bg-cover bg-center flex items-end"
         style={{
-          backgroundImage: `linear-gradient(0deg, rgba(162, 89, 255, 1) 0%, rgba(162, 89, 255, 0) 100%), url(${
-            product.thumbnail ?? "/default-image.jpg"
-          })`,
+          backgroundImage: `url(${product.thumbnail ?? "/default-image.jpg"})`,
         }}
       >
-        <div className="bg-transparent p-8 rounded-lg">
-          <h1 className="text-4xl md:text-5xl font-bold bg-transparent text-white mb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2d2d2d]" />
+
+        <div className="relative z-10 p-10 max-w-4xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
             {product.name}
           </h1>
-          <p className="text-lg md:text-xl bg-transparent text-gray-300">
-            {product.excerpt}
-          </p>
+          <p className="text-lg md:text-xl text-gray-200">{product.excerpt}</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <section className="container mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {product.images?.slice(0, 4).map((image, index) => (
           <div
             key={index}
-            className="h-48 overflow-hidden rounded-lg shadow-xl transform transition duration-300 hover:scale-105"
+            className="h-52 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300"
           >
             <img
               src={image}
@@ -95,47 +90,44 @@ export default function ProductBySlug() {
             />
           </div>
         ))}
-      </div>
+      </section>
 
-      <div className="container mx-auto p-8 text-white flex flex-col lg:flex-row justify-between gap-8">
-        <div className="flex-1 bg-[#3B3B3B] rounded-lg p-4 space-y-6">
+      <section className="container mx-auto px-4 pb-20 flex flex-col lg:flex-row gap-10 text-white">
+        <div className="flex-1 bg-[#2D2D2D] p-6 rounded-xl shadow-lg space-y-6">
           <div>
             <h2 className="text-2xl font-semibold mb-2">Description</h2>
             <p className="text-gray-300">{product.description}</p>
           </div>
           <div>
             <h2 className="text-2xl font-semibold mb-2">Excerpt</h2>
-            <p className="text-gray-300">{product.excerpt}</p>
+            <p className="text-gray-400">{product.excerpt}</p>
           </div>
         </div>
 
-        <div className="flex-1 p-4 rounded-lg bg-[#3B3B3B] lg:pl-12">
+        <div className="w-full lg:w-1/3 bg-[#2D2D2D] p-6 rounded-xl shadow-lg">
           <h2 className="text-2xl font-semibold mb-4">Tags</h2>
-          <div className="flex flex-wrap gap-3">
-            {product.tags.map((tag, index) => (
+          <div className="flex flex-wrap gap-2 mb-8">
+            {product.tags.map((tag, idx) => (
               <span
-                key={index}
-                className="bg-[#A259FF] text-white py-1 px-3 rounded-full"
+                key={idx}
+                className="bg-[#A259FF] text-sm py-1 px-3 rounded-full"
               >
                 {tag}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center space-x-6 mt-8">
-            <div className="flex flex-col items-center bg-[#A259FF] rounded-l-lg text-white text-2xl font-semibold py-2 px-6 shadow-lg">
-              <button className="bg-[#A259FF]">
-                {formatRupiah(product.price)}
-              </button>
+          <div className="flex items-center justify-between mt-4 gap-4">
+            <div className="text-3xl font-bold text-green-400">
+              {formatRupiah(product.price)}
             </div>
-
             <ButtonAddWishlistDetail
               productId={product._id.toString()}
               slug={product.slug}
             />
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </>
