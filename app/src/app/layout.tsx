@@ -31,7 +31,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Aditya Saputra", url: "https://gamevers.com" }],
   category: "e-commerce",
   generator: "Next.js",
-  themeColor: "#A259FF",
   robots: {
     index: true,
     follow: true,

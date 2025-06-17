@@ -14,7 +14,6 @@ export const metadata: Metadata = {
     "exclusive deals",
     "digital goods",
   ],
-  themeColor: "#A259FF",
   robots: {
     index: false,
     follow: false,

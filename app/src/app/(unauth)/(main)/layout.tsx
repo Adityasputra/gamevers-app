@@ -15,7 +15,6 @@ export const metadata: Metadata = {
     "e-commerce",
     "digital marketplace",
   ],
-  themeColor: "#A259FF",
   robots: {
     index: false,
     follow: false,
