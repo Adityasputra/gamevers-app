@@ -2,16 +2,24 @@ import ServerPublic from "@/components/ServerPublic";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "GameVers - Discover Amazing Products",
+  title: "GameVers - Sign In or Register",
   description:
-    "YourApp is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
+    "Join GameVers today and discover amazing digital products. Sign in or create your account to explore exclusive deals tailored to your needs.",
+  applicationName: "GameVers",
   keywords: [
-    "marketplace",
-    "e-commerce",
-    "shopping",
-    "exclusive deals",
     "GameVers",
+    "login",
+    "register",
+    "sign in",
+    "sign up",
+    "e-commerce",
+    "digital marketplace",
   ],
+  themeColor: "#A259FF",
+  robots: {
+    index: false,
+    follow: false,
+  },
   icons: {
     icon: "/favicon.ico",
   },
@@ -22,9 +30,5 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <ServerPublic>{children}</ServerPublic>
-    </>
-  );
+  return <ServerPublic>{children}</ServerPublic>;
 }

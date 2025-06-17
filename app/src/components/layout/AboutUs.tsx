@@ -47,7 +47,7 @@ export default function AboutUs() {
               <li>Fast, Reliable Delivery</li>
               <li>24/7 Customer Support</li>
             </ul>
-            <Link href="/about-us" passHref>
+            <Link href="#" passHref>
               <button
                 className="inline-block bg-[#A259FF] hover:bg-[#923AE8] transition-colors px-4 md:px-6 py-2 rounded-xl font-semibold text-white shadow-md w-full md:w-auto"
                 aria-label="Learn more about us"

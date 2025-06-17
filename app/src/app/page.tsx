@@ -38,7 +38,7 @@ export default function Home() {
               gaming? No need to wait any longer! We are your trusted partner to
               enjoy a wide range of games.
             </p>
-            <Link href="/get-started" passHref>
+            <Link href="/products" passHref>
               <button
                 className="inline-block mt-8 bg-gradient-to-r from-[#A259FF] to-[#923AE8] text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
                 aria-label="Get Started"

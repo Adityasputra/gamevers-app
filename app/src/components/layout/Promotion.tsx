@@ -26,7 +26,7 @@ export default function Promotion() {
           destination for immersive game experiences.
         </p>
 
-        <Link href="/get-started" passHref>
+        <Link href="/products" passHref>
           <button
             className="inline-block px-8 py-3 bg-white text-[#A259FF] font-semibold rounded-full shadow-xl hover:bg-[#923AE8] hover:text-white transition-colors duration-300"
             aria-label="Start your journey with GameVerse"
