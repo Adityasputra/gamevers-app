@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "digital products",
     "gaming accessories",
   ],
-  authors: [{ name: "Aditya Saputra", url: "https://gamevers.com" }],
+  authors: [{ name: "Aditya Saputra", url: "https://gamevers-app-f4ud.vercel.app" }],
   category: "e-commerce",
   generator: "Next.js",
   robots: {
@@ -56,11 +56,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GameVers - Discover Amazing Products",
     description,
-    url: "https://gamevers.com",
+    url: "https://gamevers-app-f4ud.vercel.app",
     siteName: "GameVers",
     images: [
       {
-        url: "https://gamevers.com/images/og-image.png",
+        url: "https://gamevers-app-f4ud.vercel.app/images/og-image.png",
         width: 1200,
         height: 630,
         alt: "GameVers - Discover Amazing Products",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "GameVers - Discover Amazing Products",
     description,
-    images: ["https://gamevers.com/images/og-image.png"],
+    images: ["https://gamevers-app-f4ud.vercel.app/images/og-image.png"],
     creator: "@adityasputra",
   },
 };

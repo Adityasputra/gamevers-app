@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { X, Menu } from "lucide-react";
 
 interface NavbarProductProps {
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -59,7 +60,7 @@ export default function NavbarProduct({
           className="text-white focus:outline-none md:hidden"
           aria-label="Toggle menu"
         >
-          {isOpen ? <CloseIcon /> : <MenuIcon />}
+          {isOpen ? <CloseIcon /> : <Menu size={28} />}
         </button>
 
         <div className="hidden md:flex md:items-center md:space-x-6 w-auto">
@@ -133,19 +134,6 @@ export default function NavbarProduct({
     </nav>
   );
 }
-
-const MenuIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-6 h-6"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
-  </svg>
-);
 
 const CloseIcon = () => (
   <svg
