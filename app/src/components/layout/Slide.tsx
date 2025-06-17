@@ -94,7 +94,7 @@ export default function Slide() {
                     <h3 className="text-lg font-semibold truncate">
                       {product.name}
                     </h3>
-                    <Link href={`/products/${product._id}`} passHref>
+                    <Link href={`/products/${product.slug}`} passHref>
                       <button className="inline-block mt-2 bg-[#A259FF] hover:bg-[#923AE8] text-white px-4 py-1 rounded-md font-medium transition">
                         Learn More
                       </button>

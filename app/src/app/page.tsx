@@ -1,3 +1,5 @@
+"use client";
+
 import AboutUs from "@/components/layout/AboutUs";
 import Footer from "@/components/layout/Footer";
 import JoinUs from "@/components/layout/JoinUs";
@@ -6,16 +8,27 @@ import Promotion from "@/components/layout/Promotion";
 import Slide from "@/components/layout/Slide";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <>
       <Navbar />
 
-      <main className="bg-[#2b2b2b] text-white">
-        {/* Hero Section */}
+      <main>
         <section className="container mx-auto px-4 py-20 max-w-screen-xl flex flex-col-reverse md:flex-row items-center gap-12">
-          {/* Text Column */}
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
               Discover Real Games & Play Experiences
@@ -49,7 +62,6 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Image Column */}
           <div className="w-full md:w-1/2 flex justify-center">
             <div className="relative w-full max-w-[450px] h-[450px] md:h-[500px] transform transition-transform duration-300 hover:scale-105 rounded-b-xl hover:shadow-purple hover:shadow-lg">
               <Image
@@ -62,16 +74,13 @@ export default function Home() {
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-[#3B3B3B]/80 text-white text-center rounded-b-xl py-4">
-                <h2 className="text-2xl md:text-3xl font-semibold">
-                  GameVers
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-semibold">GameVers</h2>
                 <p className="text-lg font-light">Connect, Play, Dominate</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Other Sections */}
         <Slide />
         <AboutUs />
         <Promotion />

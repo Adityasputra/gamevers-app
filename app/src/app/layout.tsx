@@ -13,31 +13,31 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GameVerse - Discover Amazing Products",
+  title: "GameVers - Discover Amazing Products",
   description:
-    "GameVerse is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
+    "GameVers is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
   keywords: [
     "marketplace",
     "e-commerce",
     "shopping",
     "exclusive deals",
-    "GameVerse",
+    "GameVers",
   ],
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "GameVerse - Discover Amazing Products",
+    title: "GameVers - Discover Amazing Products",
     description:
-      "GameVerseHub is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
-    url: "https://gameverse.com",
-    siteName: "GameVerseHub",
+      "GameVersHub is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
+    url: "https://GameVers.com",
+    siteName: "GameVersHub",
     images: [
       {
         url: "/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GameVerse - Discover Amazing Products",
+        alt: "GameVers - Discover Amazing Products",
       },
     ],
     locale: "en_US",
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GameVerse - Discover Amazing Products",
+    title: "GameVers - Discover Amazing Products",
     description:
-      "GameVerseHub is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
+      "GameVers is a marketplace where you can find and buy unique products tailored to your needs. Discover the latest trends and exclusive deals.",
     images: ["/images/og-image.png"],
     creator: "@adityasputra",
   },

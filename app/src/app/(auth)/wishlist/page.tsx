@@ -3,10 +3,10 @@ import { ProductModel } from "@/db/models/Product";
 import { cookies } from "next/headers";
 import { RemoveFromWishlistButton } from "./components/button";
 import Footer from "@/components/layout/Footer";
-import NavbarWishlist from "./NavbarWishlist";
 import { formatRupiah } from "@/db/utils/RupiahFormat";
 import Image from "next/image";
 import Link from "next/link";
+import SecondaryNavbar from "@/components/ui/SecondaryNavbar";
 
 export interface WishlistItem {
   _id: string;
@@ -39,7 +39,7 @@ export default async function WishlistPage() {
     console.error(error);
     return (
       <>
-        <NavbarWishlist />
+        <SecondaryNavbar />
         <main className="min-h-screen pt-24 pb-12 px-4 text-white text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Wishlist</h1>
@@ -55,7 +55,7 @@ export default async function WishlistPage() {
 
   return (
     <>
-      <NavbarWishlist />
+      <SecondaryNavbar />
 
       <main className="min-h-screen pt-24 pb-12 text-white px-4">
         <div className="max-w-6xl mx-auto">

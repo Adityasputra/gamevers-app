@@ -24,6 +24,17 @@ export default function NavbarProduct({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
     <nav
       aria-label="Main navigation"
@@ -31,8 +42,7 @@ export default function NavbarProduct({
         isShrink ? "bg-[#2C2C2C] py-2 shadow-md" : "bg-[#2C2C2C] py-4"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-6">
-        {/* Brand Logo */}
+      <div className="container mx-auto flex items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center">
           <Image
             src="/logos/icons8-game-96.png"
@@ -44,47 +54,25 @@ export default function NavbarProduct({
           <span className="font-bold text-white text-2xl">GameVers</span>
         </Link>
 
-        {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-white focus:outline-none lg:hidden"
+          className="text-white focus:outline-none md:hidden"
           aria-label="Toggle menu"
         >
           {isOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
 
-        {/* Menu & Search */}
-        <div
-          className={`absolute left-0 right-0 top-full z-20 w-full bg-[#2C2C2C] px-6 py-4 transform transition-all duration-300 ease-in-out md:static md:flex md:items-center md:space-x-6 md:p-0 md:w-auto ${
-            isOpen
-              ? "translate-y-0 opacity-100"
-              : "-translate-y-2 opacity-0 md:opacity-100 md:translate-y-0"
-          }`}
-        >
-          {/* Navigation Links */}
-          <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6 mb-4 md:mb-0">
-            <Link
-              href="/"
-              className="text-white hover:text-[#A259FF] transition"
-            >
-              Home
-            </Link>
-            <Link
-              href="/wishlist"
-              className="text-white hover:text-[#A259FF] transition"
-            >
-              Wishlist
-            </Link>
-            <Link
-              href="/contact"
-              className="text-white hover:text-[#A259FF] transition"
-            >
-              Contact
-            </Link>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative w-full md:w-64">
+        <div className="hidden md:flex md:items-center md:space-x-6 w-auto">
+          <Link href="/" className="text-white hover:text-[#A259FF] transition">
+            Home
+          </Link>
+          <Link
+            href="/wishlist"
+            className="text-white hover:text-[#A259FF] transition"
+          >
+            Wishlist
+          </Link>
+          <div className="relative w-48 ml-4">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3">
               <SearchIcon />
             </span>
@@ -95,6 +83,50 @@ export default function NavbarProduct({
               placeholder="Search games..."
               className="w-full pl-10 pr-4 py-2 rounded-md bg-white text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
             />
+          </div>
+        </div>
+
+        {/* Mobile menu overlay */}
+        <div
+          className={`fixed inset-0 z-40 transition-opacity duration-300 ${
+            isOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          } md:hidden`}
+          onClick={() => setIsOpen(false)}
+        ></div>
+        <div
+          className={`fixed top-0 left-0 right-0 z-50 bg-[#2C2C2C] px-6 py-6 transition-transform duration-300 md:hidden ${
+            isOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
+        >
+          <div className="flex flex-col space-y-4">
+            <Link
+              href="/"
+              className="text-white hover:text-[#A259FF] transition"
+              onClick={() => setIsOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/wishlist"
+              className="text-white hover:text-[#A259FF] transition"
+              onClick={() => setIsOpen(false)}
+            >
+              Wishlist
+            </Link>
+            <div className="relative w-full">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <SearchIcon />
+              </span>
+              <input
+                type="text"
+                value={text}
+                onChange={handleSearch}
+                placeholder="Search games..."
+                className="w-full pl-10 pr-4 py-2 rounded-md bg-white text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
+              />
+            </div>
           </div>
         </div>
       </div>

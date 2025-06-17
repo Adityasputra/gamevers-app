@@ -98,23 +98,12 @@ export default function Products() {
             Loading more products...
           </h4>
         }
-        endMessage={
-          <p className="text-center py-6 text-white bg-[#222831]">
-            <b>No more products to show</b>
-          </p>
-        }
         className="bg-[#222831] mt-16 md:mt-20 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4"
       >
         {data.map((product) => (
           <Card key={product._id.toString()} product={product} />
         ))}
       </InfiniteScroll>
-
-      {!loading && data.length === 0 && (
-        <p className="text-center py-6 text-white bg-[#222831]">
-          <b>No products match your search.</b>
-        </p>
-      )}
 
       <Footer />
     </>

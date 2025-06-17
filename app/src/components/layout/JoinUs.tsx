@@ -6,6 +6,7 @@ export default function JoinUs() {
     <section
       aria-labelledby="join-us-heading"
       className="text-white py-12 px-4 sm:px-6"
+      id="contact"
     >
       <div className="container mx-auto max-w-4xl">
         <div className="flex flex-col sm:flex-row items-center bg-[#3B3B3B] rounded-xl shadow-lg p-6 sm:p-8">

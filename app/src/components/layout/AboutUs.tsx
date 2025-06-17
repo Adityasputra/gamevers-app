@@ -3,7 +3,11 @@ import Link from "next/link";
 
 export default function AboutUs() {
   return (
-    <section aria-labelledby="about-us" className="py-8 md:py-12 text-white">
+    <section
+      aria-labelledby="about-us"
+      className="py-8 md:py-12 text-white"
+      id="about"
+    >
       <div className="container mx-auto px-4 max-w-screen-xl">
         <div className="flex flex-col md:grid lg:grid-cols-2 gap-8 md:gap-10 items-center">
           <div className="w-full mb-6 md:mb-0">
