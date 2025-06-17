@@ -1,53 +1,80 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=15623624&assignment_repo_type=AssignmentRepo)
-# My eCommerce App
+![App Screenshot](/app/public/images/og-image.png)
 
-## Tujuan Pembelajaran
+# 🎮 GameVers
 
-- Student mampu membuat aplikasi server dengan menggunakan menggunakan Typescript, NEXT.js dan melakukan proses CRUD dengan database MongoDB
-- Student mampu membuat web aplikasi dengan menggunakan framework NEXT.js
-- Student mampu menghandle navigasi pada NEXT.js
-- Student mampu menghandle authentikasi pada NEXT.js
-- Student mampu mengimplementasikan CSR & SSR pada NEXT.js
+**GameVers** is a fullstack game product management web application built with **Next.js App Router**, **MongoDB**, and **TailwindCSS**. It allows users to browse, search, and manage game product data efficiently.
 
-## Aturan Umum
+## 🚀 Features
 
-Challenge Hacktiv8 bersifat latihan WAJIB yang menjunjung tinggi INTEGRITAS. Segala bentuk ketidakjujuran meliputi peniruan, plagiarisme, pemalsuan pengerjaan akan mendapatkan tindakan tegas dari akademik.
+- 🔍 Search and filter game products
+- 📦 Pagination and data management
+- 🧩 RESTful API with Next.js Route Handlers
+- 🌐 Fully deployable on Vercel
 
-Untuk melatih best practice di lapangan kerja, student diharuskan untuk melakukan git commit minimal 1 hari 4 kali dengan message yang deskriptif atau commit message yang sesuai
+## 🛠️ Tech Stack
 
-## Ringkasan
+- **Frontend**: Next.js 15 App Router, Tailwind CSS
+- **Backend**: Next.js API Routes, MongoDB
+- **Authentication**: JWT (JsonWebToken)
+- **Deployment**: Vercel
 
-My eCommerce App adalah sebuah web aplikasi yang dibangun menguunakan Typescript , framework NEXT.js dan database MongoDB, jadi kerjakan dengan baik sebagai bekal portofolio kamu.
+## 📂 Project Structure
 
-Pada challenge ini, kamu diminta untuk membuat aplikasi client-server dengan detail sebagai berikut:
+```
+src/
+├── app/                   # Next.js App Router pages
+│   └── api/               # API handlers (GET, POST, etc.)
+├── components/            # Reusable UI components
+├── db/
+│   ├── models/            # MongoDB models and functions
+│   └── utils/             # JWT, DB connection, etc.
+└── ...
+```
 
-### Halaman
+## 🧪 Getting Started Locally
 
-- [ ] Halaman Register
-- [ ] Halaman Login
-- [ ] Halaman Home
-  - [ ] Banner Promo
-  - [ ] Detail info Ecommerce
-  - [ ] Featured Product (5-10 product) + “see-all”
-- [ ] Halaman Product
-- [ ] List Product
-  - [ ] Fitur Search
-  - [ ] Fitur Pagination (menggunakan infinite scroll)
-  - [ ] Fitur Add to wishlist
-- [ ] Halaman Detail Product
-  - [ ] Fitur Add to wishlist
-  - [ ] Implementasi Meta Tag di Head sesuai detail product
-- [ ] Halaman Wishlist Product
-  - [ ] List Wishlist
-  - [ ] Fitur Remove Wishlist
+### 1. Clone the Repository
 
-### Fitur
+```bash
+git clone https://github.com/Adityasputra/gamevers-app.git
+cd gamevers-app
+```
 
-- [ ] Fitur register
-- [ ] Fitur login
-- [ ] Fitur show list product
-- [ ] Fitur show detail product
-- [ ] Fitur add to wishlist
-- [ ] Fitur remove wishlist
-- [ ] Fitur search product berdasarkan nama (implement menerapkan debounce)
-- [ ] Fitur pagination (implement infinite scroll)
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_DATABASE_NAME=gamevers_db
+NEXT_PUBLIC_MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret
+```
+
+> Replace values with your actual credentials.
+
+### 4. Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open your browser at `http://localhost:3000` to see the app.
+
+## 🌍 Deployment
+
+This app can be deployed seamlessly on **Vercel**. Make sure to configure the necessary environment variables through the Vercel dashboard (avoid using localhost URLs).
+
+## ⚠️ Common Issues
+
+- **Missing Environment Variables**: Ensure `NEXT_PUBLIC_BASE_URL` is defined in both local and production environments.
+
+---
+
+© 2025 Aditya Saputra · Built with ❤️ using Next.js
