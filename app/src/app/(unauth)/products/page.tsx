@@ -29,7 +29,7 @@ export default function Products() {
       setLoading(true);
       try {
         const res = await fetch(
-          `${BASE_URL}/api/products?page=1&pageSize=${PAGE_SIZE}&search=${value}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?page=1&pageSize=${PAGE_SIZE}&search=${value}`,
           { signal }
         );
         const result = await res.json();
