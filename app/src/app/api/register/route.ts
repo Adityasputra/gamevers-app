@@ -4,61 +4,15 @@ import {
   getUserByUsername,
   UserModelInput,
 } from "@/db/models/User";
-import { z } from "zod";
-
-const userSchema = z.object({
-  name: z.string().optional(),
-  username: z.string(),
-  email: z.string().email(),
-  password: z.string().min(5),
-});
+import { registerSchema } from "@/db/utils/zodSchemas";
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as UserModelInput;
-    const parsedData = userSchema.safeParse(body);
+    const body = await request.json();
 
-    if (!parsedData.success) {
-      throw parsedData.error;
-    }
-
-    const { email, username } = parsedData.data;
-
-    const checkEmail = await getUserByEmail(email);
-    if (checkEmail) {
-      return Response.json(
-        {
-          error: {
-            message: "Email is already registered",
-          },
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const checkUsername = await getUserByUsername(username);
-    if (checkUsername) {
-      return Response.json(
-        {
-          error: {
-            message: "Username is already taken",
-          },
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const user = await createUser(parsedData.data);
-    return Response.json(user, {
-      status: 201,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errors = error.issues.map((issue) => ({
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
+      const errors = parsed.error.issues.map((issue) => ({
         path: issue.path.join("."),
         message: issue.message,
       }));
@@ -66,24 +20,47 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error: {
-            message: "Validation Failed",
+            message: "Validation failed",
             details: errors,
           },
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
-    console.error("Unexpected error in POST /register:", error);
+    const { confirmPassword, ...rest } = parsed.data;
+    const userData: UserModelInput = {
+      ...rest,
+    };
+
+    const { email, username } = userData;
+
+    const existingEmail = await getUserByEmail(email);
+    if (existingEmail) {
+      return Response.json(
+        { error: { message: "Email already registered" } },
+        { status: 400 }
+      );
+    }
+
+    const existingUsername = await getUserByUsername(username);
+    if (existingUsername) {
+      return Response.json(
+        { error: { message: "Username already taken" } },
+        { status: 400 }
+      );
+    }
+
+    const user = await createUser(userData);
+
+    console.log("User created:", user);
+
+    return Response.json(user, { status: 201 });
+  } catch (err) {
+    console.error("POST /api/register error:", err);
     return Response.json(
-      {
-        message: "Internal Server Error",
-      },
-      {
-        status: 500,
-      }
+      { error: { message: "Internal server error" } },
+      { status: 500 }
     );
   }
 }
