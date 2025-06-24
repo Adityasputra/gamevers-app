@@ -1,26 +1,20 @@
 import { getUserByEmail } from "@/db/models/User";
 import { comparePassword } from "@/db/utils/bcrypt";
 import { signToken } from "@/db/utils/jwt";
+import { loginSchema } from "@/db/utils/zodSchemas";
 import { NextResponse } from "next/server";
-import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(5),
-});
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const parsedData = loginSchema.safeParse(body);
 
+    const messages = parsedData.error?.issues.map((issue) => issue.message);
+
     if (!parsedData.success) {
       return NextResponse.json(
         {
-          error: {
-            message: "Invalid input",
-            details: parsedData.error.issues,
-          },
+          error: messages,
         },
         { status: 400 }
       );
