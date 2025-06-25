@@ -1,51 +1,73 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BASE_URL } from "@/constant";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export interface LoginResponse {
-  access_token: string;
-}
+export default function LoginPage() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-export default function Login() {
-  const handleLogin = async (formData: FormData) => {
-    "use server";
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
 
+    const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const response = await fetch(`${BASE_URL}/api/login`, {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const result = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      return redirect("/login?error=" + encodeURIComponent(result.message));
+      if (!response.ok) {
+        if (data.error) {
+          if (Array.isArray(data.error)) {
+            data.error.forEach((msg: string) => toast.error(msg));
+          } else if (data.error.message) {
+            toast.error(data.error.message);
+          }
+        } else if (data.message) {
+          toast.error(data.message);
+        } else {
+          toast.error("An unknown error occurred.");
+        }
+      } else {
+        toast.success("Login successful");
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
+      }
+    } catch (error) {
+      toast.error("An unknown error occurred.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    (await cookies()).set("Authorization", `Bearer ${result.access_token}`);
-    redirect("/");
   };
 
   return (
     <div
-      className="min-h-screen py-24 px-4 bg-cover bg-center relative"
-      style={{
-        backgroundImage: 'url("/bg-gaming.jpg")',
-      }}
+      className="min-h-screen py-20 px-4 bg-cover bg-center relative"
+      style={{ backgroundImage: 'url("/bg-gaming.jpg")' }}
     >
-      {/* Overlay */}
+      <ToastContainer />
+
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-0" />
 
-      <div className="relative z-10 flex flex-col lg:flex-row bg-[#1b1b1b] bg-opacity-90 rounded-lg shadow-2xl shadow-[#A259FF] overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-        {/* Left Image */}
+      <div className="relative z-10 flex flex-col lg:flex-row bg-[#121212]/90 backdrop-blur-md rounded-3xl shadow-[0_0_20px_#A259FF80] overflow-hidden mx-auto max-w-4xl border border-[#A259FF30]">
+        {/* Side Image */}
         <div
-          className="hidden lg:block lg:w-1/2 bg-cover"
+          className="hidden lg:block lg:w-1/2 bg-cover bg-center"
           style={{
             backgroundImage:
               'url("/concept-person-suffering-from-cybersickness-technology-addiction.jpg")',
@@ -54,75 +76,69 @@ export default function Login() {
         />
 
         {/* Login Form */}
-        <div className="w-full p-8 lg:w-1/2 text-white">
-          <h2 className="text-3xl font-bold text-[#A259FF] text-center tracking-widest drop-shadow-md">
+        <div className="w-full lg:w-1/2 p-10 text-white flex flex-col justify-center">
+          <h2 className="text-4xl font-extrabold text-center text-[#A259FF] tracking-wide mb-2">
             GameVers
           </h2>
-          <p className="text-lg text-gray-300 text-center mb-6">
-            Welcome back!
+          <p className="text-sm text-center text-gray-400 mb-6">
+            Welcome back, gamer! Ready to explore?
           </p>
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="border-b border-[#A259FF] w-1/5 lg:w-1/4" />
-            <p className="text-xs text-center text-gray-500 uppercase">
-              Get started
+          <div className="flex items-center justify-between mb-6">
+            <span className="border-b border-[#A259FF80] w-1/4" />
+            <p className="text-xs text-gray-500 uppercase tracking-widest">
+              Login
             </p>
-            <span className="border-b border-[#A259FF] w-1/5 lg:w-1/4" />
+            <span className="border-b border-[#A259FF80] w-1/4" />
           </div>
 
-          <form action={handleLogin} className="space-y-5">
-            {/* Email */}
-            <div className="relative">
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
               <label
                 htmlFor="email"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
+                className="block text-sm font-medium text-[#A259FF]"
               >
-                Email Address
+                Email
               </label>
               <input
-                required
                 type="email"
-                name="email"
                 id="email"
-                placeholder="Enter your email"
-                autoComplete="email"
-                aria-label="Email"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
+                name="email"
+                placeholder="gamer@example.com"
+                className="mt-1 w-full rounded-xl py-2.5 px-4 bg-[#1F1F1F] text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
               />
             </div>
 
-            {/* Password */}
             <div>
               <label
                 htmlFor="password"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
+                className="block text-sm font-medium text-[#A259FF]"
               >
                 Password
               </label>
               <input
-                required
                 type="password"
-                name="password"
                 id="password"
-                placeholder="Enter your password"
-                autoComplete="current-password"
-                aria-label="Password"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
+                name="password"
+                placeholder="••••••••"
+                className="mt-1 w-full rounded-xl py-2.5 px-4 bg-[#1F1F1F] text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
               />
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#A259FF] to-[#923AE8] text-white py-2 rounded-xl hover:scale-[1.02] hover:shadow-xl transition duration-200 font-bold"
+              disabled={loading}
+              className="w-full bg-gradient-to-tr from-[#A259FF] to-[#6C33E2] hover:from-[#B070FF] hover:to-[#8D4DF9] py-2.5 rounded-xl font-bold text-white transition-all duration-200 hover:shadow-[0_0_10px_#A259FF80] disabled:opacity-50"
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </button>
 
-            {/* Navigation */}
-            <p className="text-sm text-center text-gray-400">
-              Don't have an account?{" "}
-              <Link href="/register" className="text-[#A259FF] hover:underline">
+            <p className="text-sm text-center text-gray-400 mt-4">
+              Don’t have an account?{" "}
+              <Link
+                href="/register"
+                className="text-[#A259FF] font-medium hover:underline"
+              >
                 Sign Up
               </Link>
             </p>
