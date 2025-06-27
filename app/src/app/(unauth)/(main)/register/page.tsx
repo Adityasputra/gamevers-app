@@ -1,166 +1,179 @@
-import { BASE_URL } from "@/constant";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Register() {
-  const handleRegister = async (formData: FormData) => {
-    "use server";
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-    const rawFormData = {
-      name: formData.get("name"),
-      username: formData.get("username"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-
-    const response = await fetch(`${BASE_URL}/api/register`, {
-      method: "POST",
-      body: JSON.stringify(rawFormData),
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const result = await response.json();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    if (!response.ok) {
-      return redirect("/register?error=" + encodeURIComponent(result.message));
+    if (formData.password !== formData.confirmPassword) {
+      setError("Password and confirm password do not match.");
+      setLoading(false);
+      return;
     }
 
-    redirect("/login");
+    try {
+      const res = await fetch(`/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setError(result?.error?.message || "Failed to register");
+      } else {
+        router.push("/login");
+      }
+    } catch (err) {
+      setError("Server error occurred.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div
-      className="min-h-screen py-24 px-4 bg-cover bg-center relative"
-      style={{
-        backgroundImage: 'url("/bg-gaming.jpg")',
-      }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-0" />
+    <div className="min-h-screen bg-gradient-to-br from-black to-[#2c003e] flex items-center justify-center px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
+        <div className="hidden md:block">
+          <div className="w-full h-[500px] bg-[url('/concept-person-suffering-from-cybersickness-technology-addiction.jpg')] bg-cover bg-center rounded-2xl shadow-lg" />
+        </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row bg-[#1b1b1b] bg-opacity-90 rounded-lg shadow-2xl shadow-[#A259FF] overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-        {/* Left Image */}
-        <div
-          className="hidden lg:block lg:w-1/2 bg-cover"
-          style={{
-            backgroundImage:
-              'url("/concept-person-suffering-from-cybersickness-technology-addiction.jpg")',
-            backgroundPositionX: "85%",
-          }}
-        />
-
-        {/* Register Form */}
-        <div className="w-full p-8 lg:w-1/2 text-white">
-          <h2 className="text-3xl font-bold text-[#A259FF] text-center tracking-widest drop-shadow-md">
-            GameVers
-          </h2>
-          <p className="text-lg text-gray-300 text-center mb-6">
+        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl text-white shadow-xl w-full">
+          <h2 className="text-3xl font-bold mb-4 text-center">Sign Up</h2>
+          <p className="text-md text-gray-300 text-center mb-6">
             Create an account
           </p>
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="border-b border-[#A259FF] w-1/5 lg:w-1/4" />
-            <p className="text-xs text-center text-gray-500 uppercase">
-              Get started
-            </p>
-            <span className="border-b border-[#A259FF] w-1/5 lg:w-1/4" />
-          </div>
-
-          <form action={handleRegister} className="space-y-5">
-            {/* Name */}
-            <div>
-              <label
-                htmlFor="name"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
-              >
-                Name
-              </label>
-              <input
-                required
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Enter your name"
-                autoComplete="name"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
-              />
+          {error && (
+            <div className="bg-red-500/10 text-red-400 px-4 py-2 rounded mb-4 text-sm text-center">
+              {error}
             </div>
+          )}
 
-            {/* Username */}
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label
-                htmlFor="username"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
-              >
-                Username
-              </label>
+              <label className="block text-sm font-medium mb-1">Username</label>
               <input
-                required
                 type="text"
                 name="username"
-                id="username"
-                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="your_username"
                 autoComplete="username"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
+                required
               />
             </div>
 
-            {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
-              >
-                Email Address
-              </label>
+              <label className="block text-sm font-medium mb-1">Email</label>
               <input
-                required
                 type="email"
                 name="email"
-                id="email"
-                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="you@example.com"
                 autoComplete="email"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="text-sm font-semibold text-[#A259FF] block mb-1"
-              >
-                Password
-              </label>
-              <input
                 required
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter your password"
-                autoComplete="new-password"
-                className="w-full rounded-lg py-2 px-4 bg-[#2b2b2b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
               />
             </div>
 
-            {/* Submit */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2 text-gray-300"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Re-enter your password"
+                  autoComplete="new-password"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-2 text-gray-300"
+                >
+                  {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#A259FF] to-[#923AE8] text-white font-bold py-2 px-4 rounded-xl hover:scale-[1.02] hover:shadow-xl transition duration-200"
+              disabled={loading}
+              className="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
-
-            {/* Link to Login */}
-            <p className="text-sm text-center text-gray-400">
-              Already have an account?{" "}
-              <Link href="/login" className="text-[#A259FF] hover:underline">
-                Sign In
-              </Link>
-            </p>
           </form>
+
+          <p className="text-center text-gray-300 mt-6">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-purple-400 hover:text-purple-300"
+            >
+              Sign In
+            </Link>
+          </p>
         </div>
       </div>
     </div>
