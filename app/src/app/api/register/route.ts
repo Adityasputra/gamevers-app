@@ -2,63 +2,46 @@ import {
   createUser,
   getUserByEmail,
   getUserByUsername,
-  UserModelInput,
 } from "@/db/models/User";
 import { registerSchema } from "@/db/utils/zodSchemas";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
     const parsed = registerSchema.safeParse(body);
+
     if (!parsed.success) {
-      const errors = parsed.error.issues.map((issue) => ({
-        path: issue.path.join("."),
-        message: issue.message,
-      }));
-
-      return Response.json(
-        {
-          error: {
-            message: "Validation failed",
-            details: errors,
-          },
-        },
-        { status: 400 }
-      );
+      const errors = parsed.error.issues.map((i) => i.message);
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const { confirmPassword, ...rest } = parsed.data;
-    const userData: UserModelInput = {
-      ...rest,
-    };
+    const { email, username, password, name } = parsed.data;
 
-    const { email, username } = userData;
+    const [existingEmail, existingUsername] = await Promise.all([
+      getUserByEmail(email),
+      getUserByUsername(username),
+    ]);
 
-    const existingEmail = await getUserByEmail(email);
     if (existingEmail) {
-      return Response.json(
+      return NextResponse.json(
         { error: { message: "Email already registered" } },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
-    const existingUsername = await getUserByUsername(username);
     if (existingUsername) {
-      return Response.json(
+      return NextResponse.json(
         { error: { message: "Username already taken" } },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
-    const user = await createUser(userData);
-
-    console.log("User created:", user);
-
-    return Response.json(user, { status: 201 });
-  } catch (err) {
-    console.error("POST /api/register error:", err);
-    return Response.json(
+    const newUser = await createUser({ email, username, password, name });
+    return NextResponse.json(newUser, { status: 201 });
+  } catch (error) {
+    console.error("Registration failed:", error);
+    return NextResponse.json(
       { error: { message: "Internal server error" } },
       { status: 500 }
     );
