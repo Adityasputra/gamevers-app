@@ -24,10 +24,10 @@ export const COLLECTION_RESET_TOKEN = "reset_tokens";
  * Throws an error if the environment variable is not defined.
  */
 export const DATABASE_NAME: string = (() => {
-  const name = process.env.NEXT_PUBLIC_DATABASE_NAME;
+  const name = process.env.DATABASE_NAME;
   if (!name) {
     throw new Error(
-      "Environment variable NEXT_PUBLIC_DATABASE_NAME must be defined."
+      "Environment variable DATABASE_NAME must be defined."
     );
   }
   return name;
